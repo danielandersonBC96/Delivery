@@ -1,0 +1,30 @@
+
+.app-content {
+  display: flex;                  /* Use flexbox for layout */
+  align-items: flex-start;        /* Align items to the start */
+  padding: 20px;                  /* Add some padding around the content */
+  gap: 20px;  
+ 
+
+}
+
+.sidebar {
+  width: 25%;                     /* Set the width of the sidebar */
+  /* Adjust sidebar styles if needed */
+}
+
+.add {
+  width: 300px;                  /* Set a fixed width for the Add component */
+  flex-shrink: 0;                /* Prevents the Add component from shrinking */
+  /* Existing styles from your .add class... */
+}
+
+.admin-home{
+  flex: 1;
+  padding: 20px;
+  margin: 0;
+  background-color:   whitesmoke;
+  border-radius: 15px;
+  border-collapse: collapse;
+}
+

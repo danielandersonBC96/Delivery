@@ -1,0 +1,163 @@
+/* Estilo principal do footer */
+.footer {
+  padding: 40px 20px;
+  text-align: center;
+  color:  white;
+  background-color: tomato;
+  width: 100%;
+  margin-top: 40px;
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Container flexível para organização responsiva */
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Estilos para seções esquerda, central e direita */
+.footer-content-left,
+.footer-content-center,
+.footer-content-right {
+  flex: 1;
+  max-width: 300px; /* Limita a largura das seções para um layout mais uniforme */
+  text-align: left;
+}
+
+/* Estilos do logo */
+.footer-logo {
+  width: 90px;
+  margin-bottom: 15px;
+  border-radius: 50%;
+}
+
+/* Estilos de parágrafo */
+.footer p {
+  margin: 0;
+  color:    white;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+/* Ícones de redes sociais */
+.footer-social-icons img {
+  width: 28px;
+  margin: 0 8px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.footer-social-icons img:hover {
+  transform: scale(1.1);
+}
+
+/* Links nas seções central e direita */
+.footer-content-center ul,
+.footer-content-right ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-content-center ul li,
+.footer-content-right ul li {
+  margin: 5px 0;
+  cursor: pointer;
+  color:  white;
+  transition: color 0.3s;
+}
+
+.footer-content-center ul li:hover,
+.footer-content-right ul li:hover {
+  color:  yellow;
+}
+
+/* Títulos */
+h2 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+/* Layout responsivo para telas médias e grandes (a partir de 768px) */
+@media (min-width: 768px) {
+  .footer-container {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .footer {
+    text-align: left;
+  }
+}
+
+/* Layout para telas pequenas (até 767px), otimizando para todos os celulares */
+@media (max-width: 667px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .footer-content-left,
+  .footer-content-center,
+  .footer-content-right {
+    text-align: center;
+    max-width: 100%;
+    padding: 0 15px;
+  }
+
+  .footer-logo {
+    width: 80px;
+    margin-bottom: 10px;
+  }
+
+  .footer p {
+    font-size: 0.85rem;
+  }
+
+  .footer-content-center ul li,
+  .footer-content-right ul li {
+    font-size: 0.85rem;
+  }
+}
+
+/* Responsividade para telas muito pequenas (ex: iPhone SE, dispositivos Android compactos) */
+@media (max-width: 480px) {
+  .footer-container {
+    padding: 10px;
+  }
+
+  .footer-content-left,
+  .footer-content-center,
+  .footer-content-right {
+    padding: 0;
+  }
+
+  .footer-logo {
+    width: 70px;
+    margin-bottom: 8px;
+  }
+
+  .footer p {
+    font-size: 0.8rem;
+  }
+
+  .footer-social-icons img {
+    width: 24px; /* Ícones menores para telas muito pequenas */
+    margin: 0 6px;
+  }
+
+  .footer-content-center ul li,
+  .footer-content-right ul li {
+    font-size: 0.8rem;
+  }
+}

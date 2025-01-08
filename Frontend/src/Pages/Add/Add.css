@@ -1,0 +1,133 @@
+/* Contêiner principal */
+.add {
+  flex: 1;
+  padding: 20px;
+  margin: 0;
+  background-color:   whitesmoke;
+  border-radius: 15px;
+  border-collapse: collapse;
+}
+
+/* Estilo do formulário */
+.add-form {
+  max-width: 1200px;           /* Largura máxima aumentada para 1200px */
+  width: 100%;                 /* Ocupa toda a largura disponível */
+  margin: 0 auto;              /* Centraliza horizontalmente */
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px #ced4da;
+  padding: 20px;
+  height: auto;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {        /* Tablet and larger */
+  .add {
+    width: 80%;                    /* Wider on larger screens */
+    margin-left: auto;             /* Center the component */
+    margin-right: auto;            /* Center the component */
+  }
+}
+
+@media (min-width: 1200px) {       /* Larger screens, like TVs */
+  .add {
+    width: 60%;                    /* Further expand on larger displays */
+    left: 50px;                    /* Optional: adjust positioning */
+  }
+
+  .add-form {
+    width: 70%;                    /* Make the form wider */
+  }
+}
+
+/* Form and fields styles */
+.input-field,
+.textarea-field,
+.select-field {
+  width: 100%;                     /* Full width */
+  padding: 10px;                   /* Internal spacing */
+  border: 1px solid #ced4da;       /* Light gray border */
+  border-radius: 4px;              /* Rounded corners */
+  box-sizing: border-box;           /* Include padding and border in width */
+  margin-bottom: 15px;             /* Bottom margin */
+}
+
+.textarea-field {
+  resize: vertical;                /* Allow vertical resizing */
+}
+
+/* Submit button */
+.submit-btn {
+  background-color: tomato;       /* Blue background */
+  color:  white;                     /* Black text */
+  padding: 10px;                   /* Internal spacing */
+  border: none;                    /* Remove default border */
+  border-radius: 4px;              /* Rounded corners */
+  cursor: pointer;                  /* Pointer cursor */
+  font-size: 16px;                 /* Font size */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.submit-btn:hover {
+  background-color: darkred;       /* Darker blue on hover */
+}
+
+/* Image upload styles */
+.upload-label {
+  display: flex;                    /* Use flexbox */
+  flex-direction: column;           /* Column layout */
+  align-items: center;              /* Center content */
+  cursor: pointer;                  /* Pointer cursor */
+}
+
+.upload-input {
+  display: none;                    /* Hide file input */
+}
+
+.add-img-upload img {
+  max-width: 100%;                 /* Responsive image */
+  margin-bottom: 10px;             /* Bottom margin */
+}
+
+/* Flex column layout */
+.flex-col {
+  display: flex;                   /* Flexbox display */
+  flex-direction: column;          /* Column layout */
+  gap: 15px;                       /* Gap between elements */
+}
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50; /* Verde para sucesso, ajuste conforme necessário */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-weight: bold;
+  animation: fadeInOut 3s ease-in-out;
+  display: flex;
+  align-items: center;
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+}
+
+.alert-button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-weight: bold;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(100%); }
+  10% { opacity: 1; transform: translateX(0); }
+  90% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(100%); }
+}

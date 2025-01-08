@@ -1,0 +1,103 @@
+body {
+    min-height: 100vh;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Remove default styles from links */
+  a {
+    text-decoration: none;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Set width and center the App */
+  .App {
+  
+    margin: auto;
+  }
+
+  ::-webkit-scrollbar{
+    color: tomato;
+  }
+  
+
+  :-webkit-scrollbar {
+    width: 12px;                     /* Width of the scrollbar */
+    background-color: #f1f1f1;       /* Background of the scrollbar */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: tomato;         /* Color of the scrollbar thumb */
+    border-radius: 10px;              /* Rounded corners for the thumb */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #ff6347;        /* Darker color when hovering over the thumb */
+  }
+  
+  /* Optional: Customize the scrollbar track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;              /* Color of the track */
+    border-radius: 10px;              /* Rounded corners for the track */
+  }
+
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .remove-image-btn{
+
+    border-radius: 30px;
+    border: 1px solid tomato;
+    color: tomato;
+    background-color: white;
+    position: relative;
+    margin-left: 15px;
+    padding: 10px;
+
+  }
+
+.image-preview{
+  border-radius: 15px;
+}
+
+option{
+  background-color: white;
+  color: tomato;
+}
+.select-field {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  color: black;
+  appearance: none; /* Remove default arrow */
+  cursor: pointer;
+}
+
+.select-field:hover {
+  background-color: #f1f1f1; /* Muda o fundo quando o select é hover */
+  border-color: tomato;
+}
+
+.select-field option {
+  color: tomato;
+  background-color: #ffffff;
+  padding: 10px;
+}
+
+.select-field option:hover {
+  background-color: tomato; /* Cor do fundo ao passar o mouse */
+  color: #ffffff;
+}
+
+
+
+  
+ 

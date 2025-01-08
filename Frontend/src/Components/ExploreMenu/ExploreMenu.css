@@ -1,0 +1,141 @@
+.explore-menu {
+  text-align: center;
+}
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 100%;
+}
+
+.explore-menu-list {
+  display: flex;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
+  width: 100%;
+  scrollbar-width: none; /* Firefox */
+}
+
+.explore-menu-list::-webkit-scrollbar {
+  display: none; /* Esconder barra de rolagem para Chrome, Safari e Edge */
+}
+
+.explore-menu-list-item {
+  min-width: 200px;
+  margin: 10px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.explore-menu-list-item img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.explore-menu-list-item.active img {
+  border: 2px solid #ff0000;
+  transform: scale(1.1);
+}
+
+.arrow {
+  background-color: white;
+  border: none;
+  color: black;
+  font-size: 2rem;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.arrow.left {
+  left: 10px;
+}
+
+.arrow.right {
+  right: 10px;
+}
+
+.arrow:focus {
+  outline: none;
+}
+
+.arrow:hover {
+  background-color: #f0f0f0;
+}
+
+h1 {
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+.explore-menu-text {
+  margin-top: 30px;
+  margin-bottom: 50px;
+  color: tomato;
+}
+
+/* Estilos responsivos para dispositivos móveis */
+@media (max-width: 768px) {
+  .explore-menu-list-item {
+      min-width: 150px; /* Reduz o tamanho dos itens para telas menores */
+  }
+
+  .explore-menu-list-item img {
+      width: 120px; /* Ajusta o tamanho das imagens */
+      height: 120px;
+  }
+
+  .arrow {
+      font-size: 1.5rem; /* Diminui o tamanho das setas */
+      width: 30px;
+      height: 30px;
+  }
+
+  h1 {
+      font-size: 1.5rem; /* Ajusta o tamanho do título */
+      margin-top: 30px;
+      margin-bottom: 20px;
+  }
+
+  .explore-menu-text {
+      font-size: 1rem; /* Ajusta o tamanho do texto */
+      margin-top: 20px;
+      margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .explore-menu-list-item {
+      min-width: 120px; /* Reduz ainda mais para telas muito pequenas */
+  }
+
+  .explore-menu-list-item img {
+      width: 100px;
+      height: 100px;
+  }
+
+  .arrow {
+      font-size: 1.2rem; /* Diminui ainda mais as setas */
+      width: 25px;
+      height: 25px;
+  }
+
+  h1 {
+      font-size: 1.2rem;
+  }
+
+  .explore-menu-text {
+      font-size: 0.9rem;
+  }
+}

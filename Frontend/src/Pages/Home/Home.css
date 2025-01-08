@@ -1,0 +1,13 @@
+body {
+/* Remove default body padding */
+    width: 100vw; /* Set the body width to full viewport width */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center child components */
+    width: 100%; /* Full width */
+}

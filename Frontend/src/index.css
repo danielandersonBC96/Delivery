@@ -1,0 +1,52 @@
+/* Importação correta da fonte */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+
+/* Reset global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Outfit', sans-serif; /* Agora usando a fonte 'Outfit' importada */
+  background-color:  white;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Estilos responsivos básicos */
+body {
+  padding: 10px;
+}
+
+/* Adicionando responsividade para telas menores */
+@media (max-width: 768px) {
+  body {
+    padding: 5px; /* Ajuste de padding para telas de tablet */
+  }
+  
+  h1 {
+    font-size: 1.8rem; /* Ajuste de tamanho do título */
+  }
+  
+  p {
+    font-size: 1rem; /* Ajuste de tamanho do texto */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 5px; /* Padding menor para telas de celular */
+  }
+  
+  h1 {
+    font-size: 1.5rem; /* Tamanho menor do título em telas muito pequenas */
+  }
+
+  p {
+    font-size: 0.9rem; /* Ajuste de tamanho de fonte para dispositivos móveis */
+  }
+}

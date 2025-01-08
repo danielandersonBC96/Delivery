@@ -1,0 +1,46 @@
+/* NavBarAdmin.css */
+.navbar-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: tomato;
+    color:  white;
+    border-radius: 15px;
+   
+    margin-bottom: 30px;
+  }
+  
+  .navbar-logo img {
+    height: 50px;
+    /* Ajuste o tamanho do logo conforme necessário */
+  }
+  .navbar-profile img {
+    height: 40px; /* Ajuste o tamanho conforme necessário */
+    width: 40px;  /* Certifique-se de que a largura e altura sejam iguais */
+    border-radius: 50%; /* Torna a imagem redonda */
+    border: 2px solid white; /* Opcional: Adiciona uma borda branca */
+    object-fit: cover; /* Garante que a imagem fique bem encaixada dentro do círculo */
+  }
+  
+  
+  @media (max-width: 768px) {
+    .navbar-admin {
+      flex-direction: column;
+      padding: 20px;
+    }
+  
+    .navbar-logo img,
+    .navbar-profile img {
+      height: 60px;
+  
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .navbar-logo img,
+    .navbar-profile img {
+      height: 50px;
+    }
+  }
+  

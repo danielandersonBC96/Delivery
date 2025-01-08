@@ -1,0 +1,403 @@
+/* Cart Container */
+.cart {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Cart Item Cards */
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Cart Item Cards */
+.cart-item-card {
+  display: flex;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.cart-item-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+.cart-item-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 20px; /* Added margin to increase space between image and text */
+}
+
+/* Remove list bullets and increase spacing */
+.cart-item-details ul {
+  list-style-type: none; /* Removes bullet points */
+  padding-left: 0; /* Remove left padding */
+}
+
+.cart-item-details li {
+  margin-bottom: 10px; /* Increase space between list items */
+  font-size: 14px;
+  color: #666;
+}
+
+.cart-item-details h4 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.cart-item-details p {
+  font-size: 14px;
+  margin: 5px 0;
+  color: #666;
+}
+
+.cart-item-details .extras {
+  font-size: 12px;
+  color: #888;
+}
+
+.remove-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.remove-button:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+}
+
+/* Cart Summary */
+.cart-summary {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.cart-total {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cart-total-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.cart-total-details b {
+  font-weight: 700;
+  color: #333;
+}
+
+/* Promo Input and Submit Button Container */
+.cart-promocode-input {
+  display: flex; /* Align input and button horizontally */
+  gap: 10px; /* Add space between input and button */
+  align-items: center; /* Vertically align the items in the center */
+  width: 100%;
+}
+
+/* Promo Input */
+.promo-input {
+  padding: 12px;
+  width: 100%; /* Make input take up available width */
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  height: 48px; /* Set the same height as the button */
+  box-sizing: border-box; /* Ensure padding is included in the width */
+   margin-top: 35px;
+
+}
+
+.promo-input:focus {
+  border-color: #007bff;
+}
+
+/* Promo Submit */
+.promo-submit {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  height: 48px; /* Set the same height as the input */
+  width: auto; /* Button width will be based on content */
+  min-width: 120px; /* Set a minimum width for the button */
+  box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+/* Align both input and button to the same height and line */
+.promo-input, .promo-submit {
+  height: 48px; /* Ensure both have the same height */
+}
+
+
+.promo-submit:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+select{
+  background-color:  white; /* Azul para crédito */
+  color: tomato;
+  border-radius: 15px;
+  border: 1px solid;
+  padding: 10px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+.pay-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pay-button:hover {
+  background-color: #388e3c;
+  transform: scale(1.05);
+}
+
+/* Modal de pagamento */
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95); /* Fundo branco semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Garantir que esteja acima de outros elementos */
+}
+
+/* Conteúdo do modal */
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 1100; /* Um pouco acima para evitar sobreposição de elementos */
+}
+
+.modal-content h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: tomato;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-content button:nth-child(2) {
+  background-color:  white; /* Azul para crédito */
+  color: tomato;
+  border-radius: 15px;
+  border: 1px solid;
+  padding: 10px;
+}
+
+.modal-content button:nth-child(3) {
+  background-color:  white; /* Azul para crédito */
+  color: tomato;
+  border-radius: 15px;
+  border: 1px solid;
+  padding: 10px;
+}
+
+.modal-content button:nth-child(4) {
+  background-color:  white; /* Azul para crédito */
+  color: tomato;
+  border-radius: 15px;
+  border: 1px solid;
+  padding: 10px;
+}
+
+
+.modal-content button:hover {
+  opacity: 0.9;
+}
+
+/* Botão de fechar o modal */
+.close-modal {
+  background-color: #7f8c8d; /* Cinza para o botão de fechar */
+  color: #fff;
+}
+
+.close-modal:hover {
+  background-color: #34495e;
+}
+/* Cart.css */
+
+/* Modal styles */
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.select, .input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.select:focus, .input:focus {
+  border-color: #ff6347; /* Tomato color */
+  outline: none;
+}
+
+.remove-button {
+  width: 10%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #ff6347; /* Tomato color */
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+  background-color: #e5533d; /* Darker tomato on hover */
+}
+
+button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 15px;
+  }
+  .modal-content h3 {
+    font-size: 1.3rem;
+  }
+  button {
+    font-size: 1rem;
+  }
+}
+
+input{
+width: 100%;
+padding: 10px;
+margin-bottom: 10px;
+border-radius: 15px;
+border: solid  1px tomato;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .cart {
+    padding: 20px;
+  }
+
+  .cart-item-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-card img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .cart-item-details h4 {
+    font-size: 18px;
+  }
+
+  .remove-button {
+    padding: 8px 14px;
+  }
+
+  .cart-summary {
+    padding: 18px;
+  }
+
+  .cart-total-details {
+    font-size: 16px;
+  }
+
+  .promo-input,
+  .promo-submit,
+  .pay-button {
+    font-size: 16px;
+  }
+}

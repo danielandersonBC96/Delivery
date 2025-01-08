@@ -1,0 +1,177 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Popup Overlay */
+.login-popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:  whitesmoke; /* Darkened background */
+    z-index: 1000;
+    padding: 20px; /* Padding for small screens */
+}
+
+/* Popup Container */
+.login-popup-container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.login-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Logo à esquerda e título à direita */
+    margin-bottom: 25px;
+    gap: 20px; /* Adiciona espaço entre a logo e o título */
+}
+
+.login-popup-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+
+
+.login-popup-title h2 {
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+    margin-left:100px; 
+}
+
+.login-popup-title img {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+}
+
+/* Form Inputs */
+.login-popup-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-popup-inputs input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.login-popup-inputs input:focus {
+    border-color: tomato;
+}
+
+/* Button */
+button {
+    padding: 12px;
+    background-color: hsl(9, 100%, 64%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 18px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: darkred;
+}
+
+/* Conditions Checkbox */
+.login-popup-condition {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.login-popup-condition p {
+    margin-left: 10px;
+    font-size: 12px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.login-popup p span {
+    color:  white;
+    background-color: tomato;
+    padding:10px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.login-popup-logo {
+    width: 150px; /* Ajuste o valor conforme necessário */
+    height: auto; /* Mantém a proporção da imagem */
+    margin-right: 20px; /* Ajuste a margem conforme necessário */
+}
+.login-popup p span:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-popup-container {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    .login-popup-title h2 {
+        font-size: 20px;
+    }
+
+    .login-popup-inputs input {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-popup-container {
+        padding: 15px;
+    }
+
+    .login-popup-title h2 {
+        font-size: 18px;
+    }
+
+    .login-popup-inputs input {
+        font-size: 12px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
