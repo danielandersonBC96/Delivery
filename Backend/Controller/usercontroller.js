@@ -5,15 +5,25 @@ import bcrypt from 'bcrypt';
 const JWT_SECRET = process.env.JWT_SECRET || 'sua_chave_secreta';
 
 // Função para criar um novo usuário
-export const createUser = (name, email, password, callback) => {
-    const query = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
-    db.run(query, [name, email, password], callback);
+export const createUser = (name, email, password) => {
+    return new Promise((resolve, reject) => {
+        const query = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
+        db.run(query, [name, email, password], function (err) {
+            if (err) return reject(err);
+            resolve(this.lastID);  // Retorna o ID do usuário inserido
+        });
+    });
 };
 
 // Função para encontrar um usuário pelo email
-export const findUserEmail = (email, callback) => {
-    const query = `SELECT * FROM users WHERE email = ?`;
-    db.get(query, [email], callback);
+export const findUserEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM users WHERE email = ?`;
+        db.get(query, [email], (err, row) => {
+            if (err) return reject(err);
+            resolve(row);
+        });
+    });
 };
 
 // Rota de registro
@@ -25,39 +35,29 @@ export const register = async (req, res) => {
     }
 
     try {
-        findUserEmail(email, async (err, user) => {
-            if (err) {
-                return res.status(500).json({ message: 'Erro ao verificar email.', error: err.message });
-            }
-            if (user) {
-                return res.status(400).json({ message: 'Email já registrado.' });
-            }
+        const user = await findUserEmail(email);
+        if (user) {
+            return res.status(400).json({ message: 'Email já registrado.' });
+        }
 
-            const hashedPassword = await bcrypt.hash(password, 10);
-            createUser(name, email, hashedPassword, (err) => {
-                if (err) {
-                    return res.status(500).json({ message: 'Erro ao registrar usuário.', error: err.message });
-                }
-                res.status(201).json({ message: 'Usuário registrado com sucesso!' });
-            });
-        });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const userId = await createUser(name, email, hashedPassword);
+        res.status(201).json({ message: 'Usuário registrado com sucesso!', userId });
     } catch (err) {
         res.status(500).json({ message: 'Erro interno.', error: err.message });
     }
 };
 
 // Rota de login
-export const login = (req, res) => {
+export const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
 
-    findUserEmail(email, async (err, user) => {
-        if (err) {
-            return res.status(500).json({ message: 'Erro ao verificar email.', error: err.message });
-        }
+    try {
+        const user = await findUserEmail(email);
         if (!user) {
             return res.status(404).json({ message: 'Usuário não encontrado.' });
         }
@@ -67,11 +67,16 @@ export const login = (req, res) => {
             return res.status(401).json({ message: 'Senha inválida.' });
         }
 
+        // Gerar o token JWT com o ID do usuário
         const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });
+
+        // Enviar o token e os dados do usuário como resposta
         res.json({
             message: 'Login bem-sucedido!',
             token,
             user: { id: user.id, name: user.name, email: user.email },
         });
-    });
+    } catch (err) {
+        res.status(500).json({ message: 'Erro interno.', error: err.message });
+    }
 };

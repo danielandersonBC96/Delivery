@@ -1,7 +1,6 @@
 import express from 'express';
 import { createFood, getAllFoods, getFoodById, updateFood, deleteFood } from '../Controller/foodcontroller.js'
 import { upload } from '../Config/multer.js'; // middleware do multer
-import { createUser, login, register } from '../Controller/usercontroller.js';
 
 const router = express.Router();
 
