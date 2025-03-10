@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Content/StoreContent';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Cart = () => {
   const { cartItems, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
@@ -27,6 +28,14 @@ const Cart = () => {
     return productTotal;
   };
 
+  const getFinalTotal = () => {
+    const subtotal = getTotalCartAmount(); // Obtém o valor total dos itens no carrinho
+    const discountAmount = subtotal * discount; // Calcula o desconto
+    const deliveryFee = 2; // Taxa fixa de entrega
+    return safeToFixed(subtotal - discountAmount + deliveryFee); // Retorna o total final formatado
+};
+
+
   const handleApplyPromoCode = () => {
     if (promoCode === "DESCONTO10") {
       setDiscount(0.1);
@@ -35,23 +44,84 @@ const Cart = () => {
     }
   };
 
-  const getFinalTotal = () => {
-    const subtotal = getTotalCartAmount();
-    const deliveryFee = 2.00;
-    const discountAmount = subtotal * discount;
-    return safeToFixed(subtotal + deliveryFee - discountAmount);
-  };
+
+  const registerPurchase = async () => {
+    const user_id = localStorage.getItem('user_id');
+    const token = localStorage.getItem('token');  // Recupera o token JWT do localStorage
+
+    if (!user_id || !token) {
+        alert('Usuário não autenticado. Por favor, faça login.');
+        return;
+    }
+
+    const totalAmount = getFinalTotal();  // Calcula o valor total (incluindo descontos e taxa de entrega)
+    if (!totalAmount || totalAmount <= 0) {
+        alert('Total inválido.');
+        return;
+    }
+
+    const paymentMethod = document.getElementById('paymentMethodSelect').value;  // Captura o método de pagamento do input
+    if (!paymentMethod || paymentMethod === "SELECIONE O MÉTODO") {
+        alert('Método de pagamento não selecionado.');
+        return;
+    }
+
+    // Se esses campos não forem obrigatórios, assegure-se de que não causem erro
+    const customerName = customerName || '';
+    const phoneNumber = phoneNumber || '';
+    const discount = discount || 0;
+
+    const orderDetails = {
+        user_id: user_id,
+        total: totalAmount,
+        paymentMethod: paymentMethod,
+        customerName: customerName,
+        phoneNumber: phoneNumber,
+        discount: discount,
+        cartItems: Object.keys(cartItems).map((productId) => {
+            const item = cartItems[productId];
+            return {
+                productId: item.productId,  // Corrigido para 'productId'
+                quantity: item.quantity,
+                price: item.product.price,
+            };
+        })
+    };
+
+    try {
+        const response = await axios.post('http://localhost:4000/api/orders', orderDetails, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,  // Enviando o token JWT no header
+            }
+        });
+
+        if (response.status === 201) {  // Alterado para verificar o status correto de criação
+            alert('Compra registrada com sucesso!');
+            sendWhatsAppMessage();  // Função para enviar confirmação via WhatsApp
+        } else {
+            alert('Erro ao registrar a compra. Tente novamente!');
+        }
+    } catch (error) {
+        console.error('Erro ao registrar a compra:', error.response ? error.response.data : error.message);
+        alert('Erro ao registrar a compra. Tente novamente!');
+    }
+};
+
+
+
+
   const sendWhatsAppMessage = () => {
     if (!phoneNumber || !customerName) {
       alert("Preencha o nome e número do cliente antes de continuar.");
       return;
     }
-  
+
     if (!paymentMethod) {
       alert("Selecione um método de pagamento.");
       return;
     }
-  
+
     const formattedItems = Object.keys(cartItems).map((productId) => {
       const item = cartItems[productId];
       if (item.quantity > 0) {
@@ -63,11 +133,11 @@ const Cart = () => {
       }
       return null;
     }).filter(Boolean).join("\n");
-  
+
     const subtotal = getTotalCartAmount();
     const discountAmount = subtotal * discount;
     const totalAmount = parseFloat(subtotal - discountAmount + 2).toFixed(2); // Total com desconto e taxa
-  
+
     const message = `Olá, ${customerName}! 😊\n\n` +
       `🌟 *Idelivery* 🌟\n\n` +
       `🛒 *Itens do Pedido:*\n${formattedItems}\n\n` +
@@ -76,21 +146,18 @@ const Cart = () => {
       `💳 *Método de pagamento:* ${paymentMethod}\n` +
       `🛍️ *Total Final:* R$ ${totalAmount}\n` +
       `📱 Número: ${phoneNumber}\n\n`;
-  
-    // Corrigir formato do número de telefone
+
     const formattedPhoneNumber = phoneNumber.replace(/\D/g, ''); // Remove não dígitos
-  
-    // Verificar se o dispositivo é mobile ou desktop
+
     const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
-  
+
     const url = isMobile
       ? `https://wa.me/55${formattedPhoneNumber}?text=${encodeURIComponent(message)}`
       : `https://web.whatsapp.com/send?phone=55${formattedPhoneNumber}&text=${encodeURIComponent(message)}`;
-  
+
     window.open(url, '_blank');
   };
-  
-  
+
   return (
     <div className="cart">
       <div className="cart-items">
@@ -117,7 +184,7 @@ const Cart = () => {
                     <p>No extras</p>
                   )}
                 </div>
-                <button  onClick={() => removeFromCart(item.product._id)} className="remove-button">Remove</button>
+                <button onClick={() => removeFromCart(item.product._id)} className="remove-button">Remove</button>
               </div>
             );
           }
@@ -181,9 +248,9 @@ const Cart = () => {
               placeholder="Número do cliente"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-            className='input'
+              className='input'
             />
-            <button onClick={sendWhatsAppMessage}>Enviar WhatsApp</button>
+            <button onClick={registerPurchase}>Registrar Compra</button>
             <button onClick={() => setShowModal(false)}>Cancelar</button>
           </div>
         </div>

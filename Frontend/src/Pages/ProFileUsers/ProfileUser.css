@@ -1,0 +1,23 @@
+.profile-user-container {
+    text-align: left; /* Alinha o texto à esquerda */
+    padding: 50px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 100%; /* Faz a largura ocupar toda a tela */
+    width: 100%; /* Faz a largura ocupar toda a tela */
+    margin: 0; /* Remove margens para que ocupe toda a tela */
+}
+
+.profile-user-container h1 {
+    font-size: 2.5em;
+    color:  tomato;
+    margin-bottom: 20px; /* Espaço entre o título e o texto */
+}
+
+.profile-user-text {
+    font-size: 18px;
+    color: #555;
+    margin-top: 20px;
+}

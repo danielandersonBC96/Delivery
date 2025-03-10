@@ -10,6 +10,7 @@ import LoginPopup from './Components/LoginPopup/LoginPopup';
 import AdminHome from './Pages/Admin/AdminHome';
 import AdminListProduct from './Pages/List/AdminListProduct';
 import PagesDetails from './Pages/FoodDetails/PagesDetails';
+import ProfileUser from './Pages/ProFileUsers/ProfileUser';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false); // Inicia sem mostrar a tela de login
@@ -24,6 +25,7 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/admin' element={<AdminHome/>}/>
+            <Route path='/profile'element={<ProfileUser/>}></Route>
             <Route path='/admin/list' element={<AdminListProduct/>}/>
             <Route path='/product/:id' element={<PagesDetails />} /> {/* Rota de detalhe do produto */}
             <Route path='/cart' element={<Cart />} />
