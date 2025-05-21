@@ -1,17 +1,30 @@
 import db from '../Config/database.js'
 
 
-
 export const createOrder = (req, res) => {
-    const { total, paymentMethod, cartItems } = req.body;
-    const user_id = req.userId;  // Extraído do token JWT
+    const {
+      user_id,
+      total,
+      paymentMethod,
+      customerName = '',
+      phoneNumber = '',
+      discount = 0,
+      cartItems
+    } = req.body;
 
     if (!total || !paymentMethod || !cartItems || cartItems.length === 0) {
         return res.status(400).json({ message: 'Campos obrigatórios faltando ou carrinho vazio' });
     }
 
-    const query = `INSERT INTO orders (user_id, total, payment_method) VALUES (?, ?, ?)`;
-    db.run(query, [user_id, total, paymentMethod], function (err) {
+    // Ajusta o total com desconto se quiser (opcional)
+    const totalAmount = total - discount;
+
+    const query = `
+      INSERT INTO orders (user_id, total, payment_method, customer_name, phone_number, discount)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(query, [user_id, totalAmount, paymentMethod, customerName, phoneNumber, discount], function (err) {
         if (err) {
             return res.status(500).json({ message: 'Erro ao criar pedido', error: err.message });
         }
@@ -20,10 +33,14 @@ export const createOrder = (req, res) => {
 
         const orderItemQuery = `INSERT INTO order_items (order_id, food_id, quantity, price) VALUES (?, ?, ?, ?)`;
 
-        // Garantir que todos os itens sejam inseridos corretamente
         const insertItems = cartItems.map(item => {
+            const foodId = item.productId; // já vem do front como productId
+            if (!foodId) {
+                return Promise.reject(new Error('Item do carrinho sem productId'));
+            }
+
             return new Promise((resolve, reject) => {
-                db.run(orderItemQuery, [orderId, item.productId, item.quantity, item.price], (err) => {
+                db.run(orderItemQuery, [orderId, foodId, item.quantity, item.price], (err) => {
                     if (err) reject(err);
                     else resolve();
                 });
@@ -35,6 +52,7 @@ export const createOrder = (req, res) => {
             .catch(err => res.status(500).json({ message: 'Erro ao adicionar itens ao pedido', error: err.message }));
     });
 };
+
 
 
 //Obter pedidos de um usario especifico

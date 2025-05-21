@@ -1,8 +1,16 @@
 import db from '../Config/database.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'sua_chave_secreta';
+dotenv.config(); // ⚠️ ESSENCIAL para carregar o .env
+
+// Verifica se a variável de ambiente está definida
+if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET não definido no arquivo .env');
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Função para criar um novo usuário
 export const createUser = (name, email, password) => {
@@ -70,7 +78,6 @@ export const login = async (req, res) => {
         // Gerar o token JWT com o ID do usuário
         const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });
 
-        // Enviar o token e os dados do usuário como resposta
         res.json({
             message: 'Login bem-sucedido!',
             token,
