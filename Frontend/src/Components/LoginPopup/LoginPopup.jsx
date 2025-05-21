@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import './LoginPopup.css';
 import axios from 'axios';
@@ -14,27 +16,32 @@ const LoginPopup = ({ setShowLogin }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [emailError, setEmailError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            // Verificar validade do token
             axios.get('http://localhost:4000/users/verify-token', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then(response => {
-                // Token válido, redirecionar para o perfil
-                navigate('/profile');
-            })
-            .catch(error => {
-                // Token inválido ou expirado, limpar o localStorage
+            .then(() => navigate('/profile'))
+            .catch(() => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userName');
                 localStorage.removeItem('userId');
+                alert("Sua sessão expirou. Por favor, faça login novamente.");
             });
+        }
+
+        // Preenche e-mail se "lembrar de mim" estiver ativado
+        const savedEmail = localStorage.getItem('storedEmail');
+        const savedRemember = localStorage.getItem('storedRememberMe');
+        if (savedEmail && savedRemember === "true") {
+            setFormData(prev => ({ ...prev, email: savedEmail }));
+            setRememberMe(true);
         }
     }, [navigate]);
 
@@ -44,7 +51,7 @@ const LoginPopup = ({ setShowLogin }) => {
         if (name === "email") {
             setFormData({ ...formData, email: value });
             if (!/\S+@\S+\.\S+/.test(value)) {
-                setEmailError("Invalid email format.");
+                setEmailError("Formato de e-mail inválido.");
             } else {
                 setEmailError("");
             }
@@ -55,15 +62,15 @@ const LoginPopup = ({ setShowLogin }) => {
 
     const validateForm = () => {
         if (currState === "Sign Up" && !formData.name.trim()) {
-            setErrorMessage("Name is required.");
+            setErrorMessage("Nome é obrigatório.");
             return false;
         }
         if (!formData.email.trim() || emailError) {
-            setErrorMessage("A valid email is required.");
+            setErrorMessage("É necessário um e-mail válido.");
             return false;
         }
         if (formData.password.trim().length < 6) {
-            setErrorMessage("Password must be at least 6 characters long.");
+            setErrorMessage("A senha deve ter pelo menos 6 caracteres.");
             return false;
         }
         return true;
@@ -73,12 +80,12 @@ const LoginPopup = ({ setShowLogin }) => {
         e.preventDefault();
         setErrorMessage("");
         setIsLoading(true);
-    
+
         if (!validateForm()) {
             setIsLoading(false);
             return;
         }
-    
+
         try {
             if (currState === "Sign Up") {
                 const response = await axios.post('http://localhost:4000/users/register', {
@@ -93,19 +100,32 @@ const LoginPopup = ({ setShowLogin }) => {
                     email: formData.email,
                     password: formData.password
                 });
-    
-                // Armazenar o token, o nome e o ID do usuário no localStorage
-                const { token, user } = response.data;
-                localStorage.setItem('token', token);
-                localStorage.setItem('userName', user.name);
-                localStorage.setItem('userId', user.id);
-                
-                alert(`Welcome, ${user.name}!`);
-                setShowLogin(false);
-                navigate('/profile');
+
+                if (response.data && response.data.token && response.data.user) {
+                    const { token, user } = response.data;
+
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('userName', user.name);
+                    localStorage.setItem('userId', user.id);
+
+                    // Armazena informações se "lembrar de mim" estiver marcado
+                    if (rememberMe) {
+                        localStorage.setItem('storedEmail', formData.email);
+                        localStorage.setItem('storedRememberMe', "true");
+                    } else {
+                        localStorage.removeItem('storedEmail');
+                        localStorage.removeItem('storedRememberMe');
+                    }
+
+                    alert(`Login bem-sucedido! Bem-vindo, ${user.name}!`);
+                    setShowLogin(false);
+                    navigate('/profile');
+                } else {
+                    setErrorMessage("Falha no login. Verifique suas credenciais.");
+                }
             }
         } catch (error) {
-            setErrorMessage(error.response?.data?.message || "An unexpected error occurred. Please try again.");
+            setErrorMessage(error.response?.data?.message || "Ocorreu um erro inesperado. Tente novamente.");
         } finally {
             setIsLoading(false);
         }
@@ -136,18 +156,17 @@ const LoginPopup = ({ setShowLogin }) => {
                         <input
                             type="text"
                             name="name"
-                            placeholder="Your Name"
+                            placeholder="Seu Nome"
                             value={formData.name}
                             onChange={handleChange}
                             aria-label="Name"
                             required
- 
-                            />
+                        />
                     )}
                     <input
                         type="email"
                         name="email"
-                        placeholder="Your Email"
+                        placeholder="Seu E-mail"
                         value={formData.email}
                         onChange={handleChange}
                         aria-label="Email"
@@ -157,39 +176,50 @@ const LoginPopup = ({ setShowLogin }) => {
                     <input
                         type="password"
                         name="password"
-                        placeholder="Password"
+                        placeholder="Senha"
                         value={formData.password}
                         onChange={handleChange}
                         aria-label="Password"
                         required
                     />
+                    {currState === "Login" && (
+                        <div className="login-popup-remember">
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                                checked={rememberMe}
+                                onChange={() => setRememberMe(prev => !prev)}
+                            />
+                            <label htmlFor="rememberMe">Lembrar de mim</label>
+                        </div>
+                    )}
                 </div>
 
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
 
                 <button type="submit" disabled={isLoading}>
-                    {isLoading ? "Loading..." : currState === "Sign Up" ? "Create Account" : "Login"}
+                    {isLoading ? "Carregando..." : currState === "Sign Up" ? "Criar Conta" : "Login"}
                 </button>
 
                 <div className="login-popup-condition">
                     <input type="checkbox" required aria-label="Agree to terms" />
                     <p>
-                        By continuing, I agree to the <a href="/terms">terms of use</a> & <a href="/privacy">privacy policy</a>.
+                        Ao continuar, concordo com os <a href="/terms">termos de uso</a> & <a href="/privacy">política de privacidade</a>.
                     </p>
                 </div>
 
                 {currState === "Login" ? (
                     <p>
-                        Don't have an account?{" "}
+                        Não tem uma conta?{" "}
                         <span onClick={() => setCurrState("Sign Up")} className="toggle-state">
-                            Sign up here
+                            Cadastre-se aqui
                         </span>
                     </p>
                 ) : (
                     <p>
-                        Already have an account?{" "}
+                        Já tem uma conta?{" "}
                         <span onClick={() => setCurrState("Login")} className="toggle-state">
-                            Login here
+                            Faça login aqui
                         </span>
                     </p>
                 )}

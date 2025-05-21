@@ -44,69 +44,63 @@ const Cart = () => {
     }
   };
 
-
   const registerPurchase = async () => {
-    const user_id = localStorage.getItem('user_id');
-    const token = localStorage.getItem('token');  // Recupera o token JWT do localStorage
-
+    const user_id = localStorage.getItem('userId');
+    const token = localStorage.getItem('token'); // Recupera o token JWT do localStorage
+  
     if (!user_id || !token) {
-        alert('Usuário não autenticado. Por favor, faça login.');
-        return;
+      alert('Usuário não autenticado. Por favor, faça login.');
+      return;
     }
-
-    const totalAmount = getFinalTotal();  // Calcula o valor total (incluindo descontos e taxa de entrega)
+  
+    const totalAmount = getFinalTotal(); // Calcula o valor total (incluindo descontos e taxa de entrega)
     if (!totalAmount || totalAmount <= 0) {
-        alert('Total inválido.');
-        return;
+      alert('Total inválido.');
+      return;
     }
-
-    const paymentMethod = document.getElementById('paymentMethodSelect').value;  // Captura o método de pagamento do input
-    if (!paymentMethod || paymentMethod === "SELECIONE O MÉTODO") {
-        alert('Método de pagamento não selecionado.');
-        return;
+  
+    if (!paymentMethod || paymentMethod === "") {
+      alert('Método de pagamento não selecionado.');
+      return;
     }
-
-    // Se esses campos não forem obrigatórios, assegure-se de que não causem erro
-    const customerName = customerName || '';
-    const phoneNumber = phoneNumber || '';
-    const discount = discount || 0;
-
+  
     const orderDetails = {
-        user_id: user_id,
-        total: totalAmount,
-        paymentMethod: paymentMethod,
-        customerName: customerName,
-        phoneNumber: phoneNumber,
-        discount: discount,
-        cartItems: Object.keys(cartItems).map((productId) => {
-            const item = cartItems[productId];
-            return {
-                productId: item.productId,  // Corrigido para 'productId'
-                quantity: item.quantity,
-                price: item.product.price,
-            };
-        })
+      user_id: user_id,
+      total: totalAmount,
+      paymentMethod: paymentMethod,
+      customerName: customerName || '',
+      phoneNumber: phoneNumber || '',
+      discount: discount || 0,
+      cartItems: Object.keys(cartItems).map((productId) => {
+        const item = cartItems[productId];
+        return {
+          productId: productId, // Corrigido para 'productId'
+          quantity: item.quantity,
+          price: item.product.price,
+        };
+      })
     };
-
+  
     try {
-        const response = await axios.post('http://localhost:4000/api/orders', orderDetails, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,  // Enviando o token JWT no header
-            }
-        });
-
-        if (response.status === 201) {  // Alterado para verificar o status correto de criação
-            alert('Compra registrada com sucesso!');
-            sendWhatsAppMessage();  // Função para enviar confirmação via WhatsApp
-        } else {
-            alert('Erro ao registrar a compra. Tente novamente!');
+      const response = await axios.post('http://localhost:4000/api/orders', orderDetails, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Enviando o token JWT no header
         }
-    } catch (error) {
-        console.error('Erro ao registrar a compra:', error.response ? error.response.data : error.message);
+      });
+  
+      if (response.status === 201) { // Alterado para verificar o status correto de criação
+        alert('Compra registrada com sucesso!');
+        sendWhatsAppMessage(); // Função para enviar confirmação via WhatsApp
+      } else {
         alert('Erro ao registrar a compra. Tente novamente!');
+      }
+    } catch (error) {
+      console.error('Erro ao registrar a compra:', error.response ? error.response.data : error.message);
+      alert('Erro ao registrar a compra. Tente novamente!');
     }
-};
+  };
+  
 
 
 
