@@ -1,46 +1,56 @@
-import db from '../Config/database.js'
+import db from '../Config/database.js';
 
-
+// Criar um pedido com os itens do carrinho
 export const createOrder = (req, res) => {
     const {
-      user_id,
-      total,
-      paymentMethod,
-      customerName = '',
-      phoneNumber = '',
-      discount = 0,
-      cartItems
+        user_id,
+        total,
+        paymentMethod,
+        customerName = '',
+        phoneNumber = '',
+        discount = 0,
+        cartItems
     } = req.body;
 
     if (!total || !paymentMethod || !cartItems || cartItems.length === 0) {
         return res.status(400).json({ message: 'Campos obrigatórios faltando ou carrinho vazio' });
     }
 
-    // Ajusta o total com desconto se quiser (opcional)
     const totalAmount = total - discount;
 
-    const query = `
-      INSERT INTO orders (user_id, total, payment_method, customer_name, phone_number, discount)
-      VALUES (?, ?, ?, ?, ?, ?)
+    const orderQuery = `
+        INSERT INTO orders (user_id, total, payment_method, customer_name, phone_number, discount)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-    db.run(query, [user_id, totalAmount, paymentMethod, customerName, phoneNumber, discount], function (err) {
+    db.run(orderQuery, [user_id, totalAmount, paymentMethod, customerName, phoneNumber, discount], function (err) {
         if (err) {
             return res.status(500).json({ message: 'Erro ao criar pedido', error: err.message });
         }
 
         const orderId = this.lastID;
 
-        const orderItemQuery = `INSERT INTO order_items (order_id, food_id, quantity, price) VALUES (?, ?, ?, ?)`;
+        const orderItemQuery = `
+            INSERT INTO order_items (order_id, food_id, quantity, price, name, description, image)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
 
         const insertItems = cartItems.map(item => {
-            const foodId = item.productId; // já vem do front como productId
+            const foodId = item.productId;
             if (!foodId) {
                 return Promise.reject(new Error('Item do carrinho sem productId'));
             }
 
             return new Promise((resolve, reject) => {
-                db.run(orderItemQuery, [orderId, foodId, item.quantity, item.price], (err) => {
+                db.run(orderItemQuery, [
+                    orderId,
+                    foodId,
+                    item.quantity,
+                    item.price,
+                    item.name || '',
+                    item.description || '',
+                    item.image || ''
+                ], (err) => {
                     if (err) reject(err);
                     else resolve();
                 });
@@ -53,11 +63,9 @@ export const createOrder = (req, res) => {
     });
 };
 
-
-
-//Obter pedidos de um usario especifico
+// Buscar pedidos de um usuário específico
 export const getUserOrders = (req, res) => {
-    const userId = req.userId;  // Obtendo o ID do token
+    const userId = req.userId;
 
     const query = `SELECT * FROM orders WHERE user_id = ?`;
     db.all(query, [userId], (err, rows) => {
@@ -68,17 +76,16 @@ export const getUserOrders = (req, res) => {
     });
 };
 
-
-
-
-
-// Criar itens de pedido
+// Criar um item de pedido individual
 export const createOrderItem = (req, res) => {
-    const { order_id, food_id, quantity, price } = req.body;
+    const { order_id, food_id, quantity, price, name, description, image } = req.body;
 
-    const query = `INSERT INTO order_items (order_id, food_id, quantity, price) VALUES (?, ?, ?, ?)`;
+    const query = `
+        INSERT INTO order_items (order_id, food_id, quantity, price, name, description, image)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
 
-    db.run(query, [order_id, food_id, quantity, price], function (err) {
+    db.run(query, [order_id, food_id, quantity, price, name, description, image], function (err) {
         if (err) {
             return res.status(500).json({ message: 'Erro ao criar item de pedido', error: err.message });
         }
@@ -86,7 +93,7 @@ export const createOrderItem = (req, res) => {
     });
 };
 
-// Obter itens de pedido
+// Buscar itens de um pedido
 export const getOrderItems = (req, res) => {
     const { order_id } = req.params;
 
