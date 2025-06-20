@@ -31,7 +31,7 @@ const acompanhamento_batata = [
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
-  // Inicializa o estado do carrinho
+  // Inicializa o estado do carrinho como array
   const [cartItems, setCartItems] = useState([]);
 
   // Função para adicionar ao carrinho
@@ -41,7 +41,9 @@ const StoreContextProvider = (props) => {
       return;
     }
 
-    const existingItemIndex = cartItems.findIndex(item => item.product._id === cartItem.id);
+    const existingItemIndex = cartItems.findIndex(
+      (item) => item.product._id === cartItem.id
+    );
 
     if (existingItemIndex !== -1) {
       const updatedCartItems = [...cartItems];
@@ -49,7 +51,7 @@ const StoreContextProvider = (props) => {
       updatedCartItems[existingItemIndex].acompanhamentos = cartItem.extras || [];
       setCartItems(updatedCartItems);
     } else {
-      setCartItems(prev => [
+      setCartItems((prev) => [
         ...prev,
         {
           product: { _id: cartItem.id, ...cartItem },
@@ -60,18 +62,19 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  // Função para remover do carrinho
-  const removeFromCart = (itemId) => {
-    if (!itemId) {
+  // Função para remover do carrinho (corrigida)
+  const removeFromCart = (productId) => {
+    if (!productId) {
       console.warn("ItemId inválido:", itemId);
       return;
     }
 
-    console.log(`Tentando remover o item com ID: ${itemId}`);
-
     setCartItems((prev) => {
-      const updatedCartItems = prev.filter(item => String(item.product._id) !== String(itemId));
-  
+      // Filtra o array removendo o item com product._id igual a itemId
+      const updatedCartItems = prev.filter(
+        (item) => String(item.product._id) !== String(productId)
+      );
+
       if (updatedCartItems.length === prev.length) {
         console.warn(`Item com ID ${itemId} não encontrado no carrinho.`);
       }
@@ -94,7 +97,9 @@ const StoreContextProvider = (props) => {
       ...acompanhamento_batata,
     ];
 
-    const selectedAcompanhamento = allAcompanhamentos.find(a => a.name === acomp.name);
+    const selectedAcompanhamento = allAcompanhamentos.find(
+      (a) => a.name === acomp.name
+    );
     return selectedAcompanhamento ? selectedAcompanhamento.preco : 0;
   };
 
@@ -114,7 +119,7 @@ const StoreContextProvider = (props) => {
     return totalAmount + acompanhamentoTotal;
   };
 
-  // UseEffect para verificar quando o carrinho mudar
+  // UseEffect para debug do estado do carrinho
   useEffect(() => {
     console.log("Estado atual do carrinho:", JSON.stringify(cartItems, null, 2));
   }, [cartItems]);

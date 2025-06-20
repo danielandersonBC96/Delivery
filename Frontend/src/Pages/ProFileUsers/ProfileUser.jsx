@@ -1,99 +1,131 @@
-// ProfileUser.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { food_list } from '../../assets/frontend_assets/assets'; // Lista de produtos
 import './ProfileUser.css';
 
-const ProfileUser = () => {
-  const userName = localStorage.getItem('userName') || "Guest";
-  const userId = localStorage.getItem('userId'); // ID do usuário armazenado no localStorage
-  const [purchases, setPurchases] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const ProfileUser = () => {
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const fetchPurchases = async () => {
+    const fetchOrders = async () => {
       try {
-        if (!userId) {
-          console.error("User ID not found in localStorage.");
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.log('Usuário não autenticado');
           return;
         }
 
-        const response = await axios.get(`http://localhost:4000/api/purchases/${userId}`);
-        setPurchases(response.data);
+        // Busca os pedidos do usuário autenticado
+        const response = await axios.get('http://localhost:4000/api/orders/user', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const ordersData = response.data.orders;
+
+        // Para cada pedido, buscar os itens relacionados (usando a rota correta)
+        const ordersWithItems = await Promise.all(
+          ordersData.map(async (order) => {
+            try {
+              const itemsRes = await axios.get(`http://localhost:4000/api/order-items/${order.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+
+              return {
+                ...order,
+                purchaseDate: formatPurchaseDate(order.created_at || order.purchaseDate || new Date()),
+                status: order.status || 'Pendente',
+                items: itemsRes.data.orderItems || []
+              };
+            } catch (err) {
+              console.error(`Erro ao buscar itens do pedido ${order.id}`, err);
+              return { ...order, items: [] };
+            }
+          })
+        );
+
+        setOrders(ordersWithItems);
       } catch (error) {
-        console.error("Erro ao carregar compras:", error);
-      } finally {
-        setLoading(false);
+        console.error('Erro ao carregar pedidos:', error);
       }
     };
 
-    fetchPurchases();
-  }, [userId]);
+    fetchOrders();
+  }, []);
 
-  const handleReorder = (purchase) => {
-    if (!food_list || food_list.length === 0) {
-      console.error("Food list is not available.");
-      return;
-    }
+  const formatPurchaseDate = (purchaseDate) => {
+    const today = new Date();
+    const purchaseDateTime = new Date(purchaseDate);
+    const diffTime = Math.abs(today - purchaseDateTime);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    const reorderedItems = purchase.items.map(item => {
-      const product = food_list.find(p => p.name === item.product_name);
-      if (!product) {
-        console.error(`Product not found for ${item.product_name}`);
-        return null;
-      }
+    if (diffDays === 0) return 'Hoje';
+    if (diffDays === 1) return 'Ontem';
+    return purchaseDateTime.toLocaleDateString();
+  };
 
-      return {
-        product: {
-          name: product.name,
-          price: product.price,
-        },
-        quantity: item.quantity,
-      };
-    }).filter(Boolean); // Remove itens nulos
-
-    // Adicionar os itens ao carrinho
-    console.log("Reorder purchase:", reorderedItems);
-    // Aqui você pode adicionar os itens ao carrinho, chamando a função do seu carrinho
+  const handleOrderAgain = (orderIndex) => {
+    const updatedOrders = [...orders];
+    updatedOrders[orderIndex] = {
+      ...updatedOrders[orderIndex],
+      status: 'Pedido Novamente'
+    };
+    setOrders(updatedOrders);
   };
 
   return (
-    <div className="profile-user-container">
-      <h1>Welcome, {userName}!</h1>
-      <p className="profile-user-text">
-        This is your profile page. Here you can view and update your information.
-      </p>
-
-      <h2>Your Previous Purchases</h2>
-      {loading ? (
-        <p>Loading your purchases...</p>
-      ) : (
-        purchases.length > 0 ? (
-          <div className="purchase-list">
-            {purchases.map((purchase, index) => (
-              <div key={index} className="purchase-item">
-                <h3>Purchase on {new Date(purchase.purchase_date).toLocaleDateString()}</h3>
-                <ul>
-                  {purchase.items.map((item, idx) => {
-                    const product = food_list.find(p => p.name === item.product_name);
-                    return (
-                      <li key={idx}>
-                        {product
-                          ? `${product.name} - ${item.quantity} x R$ ${product.price.toFixed(2)}`
-                          : `Product not found (${item.product_name})`}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <p>Total: R$ {purchase.total.toFixed(2)}</p>
-                <button onClick={() => handleReorder(purchase)}>Reorder</button>
+    <div className="centered-container">
+      <h2>Compras do Usuário</h2>
+      <div className="purchase-container">
+        {orders.map((order, index) => (
+          <div key={order.id || index} className="purchase">
+            <div className="purchase-items">
+              <h3>Itens da Compra {index + 1}</h3>
+              <div className="table-responsive">
+                <table className="purchase-table">
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Descrição</th>
+                      <th>Preço</th>
+                      <th>Quantidade</th>
+                      <th>Imagem</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {order.items && order.items.map((item, itemIndex) => (
+                      <tr key={itemIndex}>
+                        <td>{item.name}</td>
+                        <td>{item.description}</td>
+                        <td>R$ {item.price ? item.price.toFixed(2) : ''}</td>
+                        <td>{item.quantity}</td>
+                        <td>
+                          {item.image ? (
+                            <img src={item.image} alt={item.name} className="product-image" />
+                          ) : (
+                            'Sem imagem'
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ))}
+            </div>
+            <div className="purchase-details">
+              <h3>Detalhes da Compra {index + 1}</h3>
+              <p>Data da compra: {order.purchaseDate}</p>
+              <p>Status da compra: {order.status}</p>
+              <p className="total">Total: R$ {order.total ? order.total.toFixed(2) : ''}</p>
+              {order.status !== 'Pedido Novamente' ? (
+                <button onClick={() => handleOrderAgain(index)}>Pedir Novamente</button>
+              ) : (
+                <p>Status: Pedido Novamente</p>
+              )}
+            </div>
           </div>
-        ) : (
-          <p>No previous purchases found.</p>
-        )
-      )}
+        ))}
+      </div>
     </div>
   );
 };

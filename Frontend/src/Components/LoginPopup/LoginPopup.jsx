@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import './LoginPopup.css';
 import axios from 'axios';
@@ -17,6 +15,7 @@ const LoginPopup = ({ setShowLogin }) => {
     const [emailError, setEmailError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
+    const [isVerifyingToken, setIsVerifyingToken] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,10 +32,14 @@ const LoginPopup = ({ setShowLogin }) => {
                 localStorage.removeItem('userName');
                 localStorage.removeItem('userId');
                 alert("Sua sessão expirou. Por favor, faça login novamente.");
+            })
+            .finally(() => {
+                setIsVerifyingToken(false);
             });
+        } else {
+            setIsVerifyingToken(false);
         }
 
-        // Preenche e-mail se "lembrar de mim" estiver ativado
         const savedEmail = localStorage.getItem('storedEmail');
         const savedRemember = localStorage.getItem('storedRememberMe');
         if (savedEmail && savedRemember === "true") {
@@ -108,7 +111,6 @@ const LoginPopup = ({ setShowLogin }) => {
                     localStorage.setItem('userName', user.name);
                     localStorage.setItem('userId', user.id);
 
-                    // Armazena informações se "lembrar de mim" estiver marcado
                     if (rememberMe) {
                         localStorage.setItem('storedEmail', formData.email);
                         localStorage.setItem('storedRememberMe', "true");
@@ -131,23 +133,22 @@ const LoginPopup = ({ setShowLogin }) => {
         }
     };
 
+    if (isVerifyingToken) {
+        return (
+            <div className="login-popup loading" role="status" aria-live="polite">
+                <img src={assets.logo} alt="Carregando..." className="logo-spinner" />
+            </div>
+        );
+    }
+
     return (
         <div className="login-popup" role="dialog" aria-modal="true">
             <form className="login-popup-container" onSubmit={handleSubmit}>
                 <div className="login-popup-header">
-                    <img 
-                        className="login-popup-logo" 
-                        src={assets.logo} 
-                        alt="App Logo" 
-                    />
+                    <img className="login-popup-logo" src={assets.logo} alt="App Logo" />
                     <div className="login-popup-title">
                         <h2>{currState}</h2>
-                        <img 
-                            onClick={() => setShowLogin(false)} 
-                            src={assets.cross_icon} 
-                            alt="Close popup" 
-                            aria-label="Close login popup" 
-                        />
+                        <img onClick={() => setShowLogin(false)} src={assets.cross_icon} alt="Close popup" aria-label="Close login popup" />
                     </div>
                 </div>
 
@@ -200,13 +201,6 @@ const LoginPopup = ({ setShowLogin }) => {
                 <button type="submit" disabled={isLoading}>
                     {isLoading ? "Carregando..." : currState === "Sign Up" ? "Criar Conta" : "Login"}
                 </button>
-
-                <div className="login-popup-condition">
-                    <input type="checkbox" required aria-label="Agree to terms" />
-                    <p>
-                        Ao continuar, concordo com os <a href="/terms">termos de uso</a> & <a href="/privacy">política de privacidade</a>.
-                    </p>
-                </div>
 
                 {currState === "Login" ? (
                     <p>

@@ -31,7 +31,7 @@ body {
 /* Popup Container */
 .login-popup-container {
     background: #fff;
-    padding: 40px;
+    padding: 60px;
     border-radius: 15px;
     max-width: 500px;
     width: 100%;
@@ -120,15 +120,25 @@ button:hover {
     font-size: 12px;
     margin-top: 30px;
     margin-bottom: 30px;
+    text-decoration: none;
 }
 
 .login-popup p span {
-    color:  white;
+    color: white;
     background-color: tomato;
-    padding:10px;
+    padding: 10px;
     border-radius: 15px;
     cursor: pointer;
+    margin-top: 30px;
+    display: inline-block;
+    text-decoration: none;
 }
+
+.login-popup p a {
+    text-decoration: none; /* Garante que links também não tenham sublinhado */
+}
+
+
 .login-popup-logo {
     width: 150px; /* Ajuste o valor conforme necessário */
     height: auto; /* Mantém a proporção da imagem */
@@ -173,5 +183,31 @@ button:hover {
 
     button {
         font-size: 14px;
+    }
+}
+
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 999;
+}
+
+.logo-spinner {
+    width: 100px;
+    height: 100px;
+    animation: rotateLogo 1.8s linear infinite;
+    opacity: 0.85;
+}
+
+@keyframes rotateLogo {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

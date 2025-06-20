@@ -1,148 +1,182 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Content/StoreContent';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
+  const { cartItems, removeFromCart, getTotalCartAmount, clearCart } = useContext(StoreContext);
   const [discount, setDiscount] = useState(0);
   const [promoCode, setPromoCode] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [userOrders, setUserOrders] = useState([]);
   const navigate = useNavigate();
 
   const safeToFixed = (value, decimals = 2) => {
-    return value && !isNaN(value) ? value.toFixed(decimals) : '0.00';
+    return value !== undefined && value !== null && !isNaN(value) ? Number(value).toFixed(decimals) : '0.00';
   };
 
   const getProductTotal = (item) => {
-    let productTotal = (item.product?.price || 0) * (item.quantity || 0);
-    if (item.acompanhamentos && item.acompanhamentos.length > 0) {
-      item.acompanhamentos.forEach((acomp) => {
-        productTotal += acomp.preco || 0;
-      });
-    }
-    return productTotal;
+    const basePrice = item.product?.price || 0;
+    const quantity = item.quantity || 0;
+    const baseTotal = basePrice * quantity;
+
+    const acompanhamentosTotal = item.acompanhamentos?.reduce(
+      (sum, acomp) => sum + ((acomp.preco || 0) * quantity),
+      0
+    ) || 0;
+
+    return {
+      total: baseTotal + acompanhamentosTotal,
+      name: item.product?.name || '',
+      description: item.product?.description || '',
+      image: item.product?.image || ''
+    };
   };
 
   const getFinalTotal = () => {
-    const subtotal = getTotalCartAmount(); // Obtém o valor total dos itens no carrinho
-    const discountAmount = subtotal * discount; // Calcula o desconto
-    const deliveryFee = 2; // Taxa fixa de entrega
-    return safeToFixed(subtotal - discountAmount + deliveryFee); // Retorna o total final formatado
-};
-
+    const subtotal = getTotalCartAmount();
+    const discountAmount = subtotal * discount;
+    const deliveryFee = 2;
+    return subtotal - discountAmount + deliveryFee;
+  };
 
   const handleApplyPromoCode = () => {
-    if (promoCode === "DESCONTO10") {
+    if (promoCode.trim().toUpperCase() === "DESCONTO10") {
       setDiscount(0.1);
+      alert("Desconto de 10% aplicado.");
     } else {
       setDiscount(0);
+      alert("Código inválido.");
     }
   };
 
   const registerPurchase = async () => {
     const user_id = localStorage.getItem('userId');
-    const token = localStorage.getItem('token'); // Recupera o token JWT do localStorage
-  
+    const token = localStorage.getItem('token');
+
     if (!user_id || !token) {
-      alert('Usuário não autenticado. Por favor, faça login.');
+      alert('Usuário não autenticado.');
       return;
     }
-  
-    const totalAmount = getFinalTotal(); // Calcula o valor total (incluindo descontos e taxa de entrega)
-    if (!totalAmount || totalAmount <= 0) {
-      alert('Total inválido.');
+
+    if (!cartItems || cartItems.length === 0) {
+      alert('Carrinho vazio.');
       return;
     }
-  
-    if (!paymentMethod || paymentMethod === "") {
-      alert('Método de pagamento não selecionado.');
-      return;
-    }
-  
-    const orderDetails = {
-      user_id: user_id,
-      total: totalAmount,
-      paymentMethod: paymentMethod,
-      customerName: customerName || '',
-      phoneNumber: phoneNumber || '',
-      discount: discount || 0,
-      cartItems: Object.keys(cartItems).map((productId) => {
-        const item = cartItems[productId];
-        return {
-          productId: productId, // Corrigido para 'productId'
-          quantity: item.quantity,
-          price: item.product.price,
-        };
-      })
-    };
-  
-    try {
-      const response = await axios.post('http://localhost:4000/api/orders', orderDetails, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Enviando o token JWT no header
-        }
-      });
-  
-      if (response.status === 201) { // Alterado para verificar o status correto de criação
-        alert('Compra registrada com sucesso!');
-        sendWhatsAppMessage(); // Função para enviar confirmação via WhatsApp
-      } else {
-        alert('Erro ao registrar a compra. Tente novamente!');
-      }
-    } catch (error) {
-      console.error('Erro ao registrar a compra:', error.response ? error.response.data : error.message);
-      alert('Erro ao registrar a compra. Tente novamente!');
-    }
-  };
-  
 
-
-
-
-  const sendWhatsAppMessage = () => {
-    if (!phoneNumber || !customerName) {
-      alert("Preencha o nome e número do cliente antes de continuar.");
+    if (!customerName.trim() || !phoneNumber.trim()) {
+      alert('Preencha nome e número do cliente.');
       return;
     }
 
     if (!paymentMethod) {
-      alert("Selecione um método de pagamento.");
+      alert('Escolha um método de pagamento.');
       return;
     }
 
-    const formattedItems = Object.keys(cartItems).map((productId) => {
-      const item = cartItems[productId];
+    const totalAmount = getFinalTotal();
+
+    const items = cartItems.map((item) => ({
+      productId: Number(item.product._id),
+      quantity: item.quantity,
+      price: item.product.price,
+      name: item.product.name,
+      description: item.product.description,
+      image: item.product.image,
+      acompanhamentos: item.acompanhamentos || [],
+    }));
+
+    const orderDetails = {
+      user_id: Number(user_id),
+      total: Number(totalAmount),
+      paymentMethod,
+      customerName: customerName.trim(),
+      phoneNumber: phoneNumber.trim(),
+      discount,
+      cartItems: items,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:4000/api/orders', orderDetails, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 201) {
+        alert('Compra registrada com sucesso!');
+        sendWhatsAppMessage();
+        clearCart();
+        setShowModal(false);
+        fetchUserOrders(token);
+      } else {
+        alert('Erro ao registrar a compra.');
+      }
+    } catch (error) {
+      console.error('Erro:', error.response ? error.response.data : error.message);
+      alert('Erro ao registrar a compra.');
+    }
+  };
+
+  const fetchUserOrders = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/orders/user', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.status === 200 && response.data.orders) {
+        setUserOrders(response.data.orders);
+      } else {
+        setUserOrders([]);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar pedidos do usuário:', error.response ? error.response.data : error.message);
+      setUserOrders([]);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchUserOrders(token);
+    }
+  }, []);
+
+  const sendWhatsAppMessage = () => {
+    if (!phoneNumber.trim() || !customerName.trim() || !paymentMethod) {
+      alert('Preencha todos os dados do cliente e pagamento.');
+      return;
+    }
+
+    const formattedItems = cartItems.map((item) => {
       if (item.quantity > 0) {
-        const productTotal = getProductTotal(item);
-        const accompDetails = item.acompanhamentos && item.acompanhamentos.length > 0
+        const productTotal = getProductTotal(item).total;
+        const accompDetails = item.acompanhamentos?.length > 0
           ? ` (Acompanhamentos: ${item.acompanhamentos.map(acomp => acomp.name).join(', ')})`
           : '';
         return `- ${item.product?.name} (${item.quantity}x) R$ ${safeToFixed(productTotal)}${accompDetails}`;
       }
       return null;
-    }).filter(Boolean).join("\n");
+    }).filter(Boolean).join('\n');
 
     const subtotal = getTotalCartAmount();
     const discountAmount = subtotal * discount;
-    const totalAmount = parseFloat(subtotal - discountAmount + 2).toFixed(2); // Total com desconto e taxa
+    const totalAmount = (subtotal - discountAmount + 2).toFixed(2);
 
-    const message = `Olá, ${customerName}! 😊\n\n` +
-      `🌟 *Idelivery* 🌟\n\n` +
-      `🛒 *Itens do Pedido:*\n${formattedItems}\n\n` +
-      `💰 *Total dos Itens:* R$ ${safeToFixed(subtotal)}\n` +
-      `📦 *Taxa de entrega:* R$ 2.00\n` +
-      `💳 *Método de pagamento:* ${paymentMethod}\n` +
-      `🛍️ *Total Final:* R$ ${totalAmount}\n` +
-      `📱 Número: ${phoneNumber}\n\n`;
+    const message = `Olá, ${customerName}!\n\n` +
+      `Idelivery - Confirmação de Pedido:\n\n` +
+      `Itens do Pedido:\n${formattedItems}\n\n` +
+      `Total dos Itens: R$ ${safeToFixed(subtotal)}\n` +
+      `Taxa de entrega: R$ 2.00\n` +
+      `Método de pagamento: ${paymentMethod}\n` +
+      `Total Final: R$ ${totalAmount}\n` +
+      `Contato: ${phoneNumber}\n`;
 
-    const formattedPhoneNumber = phoneNumber.replace(/\D/g, ''); // Remove não dígitos
-
+    const formattedPhoneNumber = phoneNumber.replace(/\D/g, '');
     const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
 
     const url = isMobile
@@ -155,35 +189,36 @@ const Cart = () => {
   return (
     <div className="cart">
       <div className="cart-items">
-        {Object.keys(cartItems).map((productId) => {
-          const item = cartItems[productId];
-          if (item.quantity > 0) {
-            return (
-              <div className="cart-item-card" key={productId}>
-                <div className="cart-item-image">
-                  <img src={item.product?.image || '/default-image.jpg'} alt={item.product?.name} />
-                </div>
-                <div className="cart-item-details">
-                  <h4>{item.product?.name || 'Unavailable'}</h4>
-                  <p>Price: R$ {item.product?.price ? safeToFixed(item.product.price) : '0.00'}</p>
-                  <p>Quantity: {item.quantity}</p>
-                  <p>Total: R$ {safeToFixed(getProductTotal(item))}</p>
-                  {item.acompanhamentos && item.acompanhamentos.length > 0 ? (
-                    <ul>
-                      {item.acompanhamentos.map((acomp, index) => (
-                        <li key={index}>{acomp.name || 'Extras'}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No extras</p>
-                  )}
-                </div>
-                <button onClick={() => removeFromCart(item.product._id)} className="remove-button">Remove</button>
+        {cartItems.length === 0 && <p>Carrinho vazio.</p>}
+
+        {cartItems.map((item, index) => (
+          item.quantity > 0 && (
+            <div className="cart-item-card" key={index}>
+              <div className="cart-item-image">
+                <img src={item.product?.image || '/default-image.jpg'} alt={item.product?.name || 'Produto'} />
               </div>
-            );
-          }
-          return null;
-        })}
+              <div className="cart-item-details">
+                <h4>{item.product?.name || 'Indisponível'}</h4>
+                <p>Descrição: {item.product?.description || 'Sem descrição'}</p>
+                <p>Preço: R$ {safeToFixed(item.product?.price)}</p>
+                <p>Quantidade: {item.quantity}</p>
+                <p>Total: R$ {safeToFixed(getProductTotal(item).total)}</p>
+                {item.acompanhamentos?.length > 0 ? (
+                  <ul>
+                    {item.acompanhamentos.map((acomp, idx) => (
+                      <li key={idx}>{acomp.name}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Sem extras</p>
+                )}
+              </div>
+              <button onClick={() => removeFromCart(item.product._id)} className="remove-button">
+                Remover
+              </button>
+            </div>
+          )
+        ))}
       </div>
 
       <div className="cart-summary">
@@ -193,12 +228,12 @@ const Cart = () => {
             <p>R$ {safeToFixed(getTotalCartAmount())}</p>
           </div>
           <div className="cart-total-details">
-            <p>Delivery Fee</p>
+            <p>Taxa de entrega</p>
             <p>R$ 2.00</p>
           </div>
           <div className="cart-total-details">
             <b>Total</b>
-            <b>R$ {getFinalTotal()}</b>
+            <b>R$ {safeToFixed(getFinalTotal())}</b>
           </div>
         </div>
 
@@ -207,13 +242,17 @@ const Cart = () => {
             <input
               type="text"
               className="promo-input"
-              placeholder="Promo Code"
+              placeholder="Código promocional"
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
             />
-            <button className="promo-submit" onClick={handleApplyPromoCode}>Apply</button>
+            <button className="promo-submit" onClick={handleApplyPromoCode}>
+              Aplicar
+            </button>
           </div>
-          <button className="pay-button" onClick={() => setShowModal(true)}>Checkout</button>
+          <button className="pay-button" onClick={() => setShowModal(true)} disabled={cartItems.length === 0}>
+            Finalizar Pedido
+          </button>
         </div>
       </div>
 
@@ -221,11 +260,8 @@ const Cart = () => {
         <div className="payment-modal">
           <div className="modal-content">
             <h3>Escolha o método de pagamento</h3>
-            <select 
-              value={paymentMethod} 
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            >
-              <option value="">Selecione o método de pagamento</option>
+            <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+              <option value="">Selecione</option>
               <option value="PIX">PIX</option>
               <option value="Cartão de Crédito">Cartão de Crédito</option>
               <option value="Cartão de Débito">Cartão de Débito</option>
@@ -235,14 +271,14 @@ const Cart = () => {
               placeholder="Nome do cliente"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className='input-modal'
+              className="input-modal"
             />
             <input
               type="text"
               placeholder="Número do cliente"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className='input'
+              className="input-modal"
             />
             <button onClick={registerPurchase}>Registrar Compra</button>
             <button onClick={() => setShowModal(false)}>Cancelar</button>
