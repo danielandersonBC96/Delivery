@@ -1,0 +1,288 @@
+/* Layout geral */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: tomato;
+  color: white;
+  width: 220px;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  user-select: none;
+}
+
+.sidebar h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid tomato;
+  padding-bottom: 0.5rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.sidebar ul li:hover {
+  color: #ffe5dc;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 2rem;
+}
+
+/* Navbar */
+.navbar-admin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid tomato;
+  padding-bottom: 0.75rem;
+}
+
+.navbar-admin h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.navbar-admin span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Content wrapper: filtro e tabela/cards */
+.content-wrapper {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Filtro */
+.filter-panel {
+  width: 220px;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  height: fit-content;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filter-panel h3 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.filter-panel input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline-offset: 2px;
+  transition: border-color 0.3s;
+}
+
+.filter-panel input:focus {
+  border-color: tomato;
+}
+
+/* Tabela + cards container */
+.table-and-cards {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards faturamento alinhados à direita */
+.faturamento-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Cards faturamento */
+.faturamento-box {
+  background-color: tomato;
+  color: white;
+  padding: 1.25rem 2rem;
+  border-radius: 10px;
+  flex: 0 1 250px;
+  box-shadow: 0 6px 15px rgba(255, 99, 71, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  user-select: none;
+  transition: background-color 0.3s ease;
+  cursor: default;
+}
+
+.faturamento-box:hover {
+  background-color: #e25822;
+}
+
+.faturamento-box h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.faturamento-box p {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05rem;
+}
+
+/* Conteúdo da tabela */
+.content {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  flex-grow: 1;
+  overflow: auto;
+}
+
+/* Tabela */
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.orders-table thead tr {
+  background-color: tomato;
+  color: white;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.orders-table tbody tr:hover {
+  background-color: #ffe5dc;
+}
+
+/* Paginação */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pagination button {
+  background-color: tomato;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+  background-color: #f4a79a;
+  cursor: not-allowed;
+}
+
+.pagination button:not(:disabled):hover {
+  background-color: #e25822;
+}
+
+.pagination span {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Mensagem de vazio */
+.empty-message {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .filter-panel {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .table-and-cards {
+    width: 100%;
+  }
+
+  .faturamento-wrapper {
+    justify-content: center;
+  }
+
+  .faturamento-box {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .orders-table th,
+  .orders-table td {
+    padding: 0.5rem 0.75rem;
+  }
+}

@@ -11,6 +11,7 @@ import AdminHome from './Pages/Admin/AdminHome';
 import AdminListProduct from './Pages/List/AdminListProduct';
 import PagesDetails from './Pages/FoodDetails/PagesDetails';
 import ProfileUser from './Pages/ProFileUsers/ProfileUser';
+import AdminOrderPayment from './Pages/Order/AdminOrderPayment';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false); // Inicia sem mostrar a tela de login
@@ -27,6 +28,7 @@ const App = () => {
             <Route path='/admin' element={<AdminHome/>}/>
             <Route path='/profile'element={<ProfileUser/>}></Route>
             <Route path='/admin/list' element={<AdminListProduct/>}/>
+            <Route path='/orders' element={<AdminOrderPayment/>}/>
             <Route path='/product/:id' element={<PagesDetails />} /> {/* Rota de detalhe do produto */}
             <Route path='/cart' element={<Cart />} />
           </Routes>

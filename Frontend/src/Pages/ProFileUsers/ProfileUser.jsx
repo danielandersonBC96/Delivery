@@ -89,7 +89,7 @@ export const ProfileUser = () => {
           <ul>
          
             <li><button type="button" className="sidebar-btn">Meus Pedidos</button></li>
-            <li><button type="button" className="sidebar-btn">Configurações</button></li>
+            <li><button type="button" className="sidebar-btn">mercado</button></li>
             <li><button type="button" className="sidebar-btn">Sair</button></li>
           </ul>
         </aside>
