@@ -1,35 +1,74 @@
 import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
 import path from 'path';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+
 import db from './Config/database.js';
 import foodRoutes from './Router/foodRouter.js';
-import useRoutes from './Router/userRoutes.js'
-import { fileURLToPath } from 'url';
-import ordeRoutes from './Router/createOrdeRoutes.js'
-import dotenv from 'dotenv';
+import userRoutes from './Router/userRoutes.js';
+import orderRoutes from './Router/createOrdeRoutes.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
-app.use(express.json());
-app.use(cors());
-dotenv.config();
-// Serve a pasta 'uploads' como estática
-// Utilize o caminho absoluto para o diretório de uploads
-app.use('/uploads', express.static('C:/Users/Daniel Anderson/Desktop/Delivery/Backend/Config/Uploads'));
+// Cria o servidor HTTP para ser usado pelo socket.io e express
+const server = http.createServer(app);
 
-
-// Rota principal
-app.get('/', (req, res) => {
-    res.send('API Working');
+// Configura o Socket.io com CORS liberado para seu front-end
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000', // ajuste para a porta do seu React (geralmente 3000)
+    methods: ['GET', 'POST']
+  }
 });
 
-app.use('/api', ordeRoutes);
-app.use('/foods', foodRoutes);
-app.use('/users', useRoutes)
+// Para permitir que seus controllers emitam eventos, você pode guardar o 'io' no app locals
+app.set('io', io);
 
-app.listen(port, () => {
-    console.log(`Server Started on http://localhost:${port}`);
+// Middlewares
+app.use(express.json());
+app.use(cors());
+
+// Servir uploads estáticos
+app.use('/uploads', express.static(path.join(__dirname, 'Config', 'Uploads')));
+
+// Rotas da API
+app.get('/', (req, res) => {
+  res.send('API Working com Socket.io');
+});
+
+app.use('/api', orderRoutes);
+app.use('/foods', foodRoutes);
+app.use('/users', userRoutes);
+
+// Middleware para rotas não encontradas
+app.use((req, res) => {
+  res.status(404).json({ message: 'Rota não encontrada' });
+});
+
+// Socket.io conexão
+io.on('connection', (socket) => {
+  console.log('Novo cliente conectado via WebSocket:', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado:', socket.id);
+  });
+});
+
+// Função para notificar novos pedidos
+export const notifyNewOrder = (order) => {
+  io.emit('newOrder', order); // Envia o evento para todos os clientes conectados
+};
+
+// Inicializa o servidor HTTP + Socket.io
+server.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
 });

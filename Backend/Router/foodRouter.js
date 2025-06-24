@@ -1,23 +1,28 @@
 import express from 'express';
-import { createFood, getAllFoods, getFoodById, updateFood, deleteFood } from '../Controller/foodcontroller.js'
-import { upload } from '../Config/multer.js'; // middleware do multer
+import {
+  createFood,
+  getAllFoods,
+  getFoodById,
+  updateFood,
+  deleteFood
+} from '../Controller/foodcontroller.js';
+import { upload } from '../Config/multer.js'; // Middleware de upload
 
 const router = express.Router();
 
-// Rota para adicionar um novo alimento
-router.post('/', upload.single('image'), createFood)
+// ✅ Criar novo alimento (com upload de imagem)
+router.post('/', upload.single('image'), createFood);
 
-// Rota para listar todos os alimentos
+// ✅ Buscar todos os alimentos
 router.get('/', getAllFoods);
 
-// Rota para obter um alimento pelo ID
-router.get('/:productId', getFoodById);
+// ✅ Buscar alimento por ID
+router.get('/:id', getFoodById);
 
-// Rota para atualizar um alimento pelo ID
+// ✅ Atualizar alimento por ID (com upload opcional de nova imagem)
 router.put('/:id', upload.single('image'), updateFood);
 
-// Rota para deletar um alimento pelo ID
+// ✅ Deletar alimento por nome (cuidado: esse tipo de deleção por nome pode ser perigoso se tiver nomes duplicados)
 router.delete('/name/:name', deleteFood);
-
 
 export default router;
