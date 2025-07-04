@@ -11,15 +11,15 @@ const Sidebar = () => {
       <div className="sidebar-options">
         <div className="sidebar-option" onClick={() => navigate('/admin')}>
           <img src={assets.add_icon} alt="admin" />
-          <p>Add Items</p>
+          <p>Adicionar Item</p>
         </div>
         <div className="sidebar-option" onClick={() => navigate('/admin/list')}>
           <img src={assets.order_icon} alt="List" />
-          <p>List Items</p>
+          <p>Lista de Item</p>
         </div>
         <div className="sidebar-option" onClick={() => navigate('/orders')}>
           <img src={assets.order_icon} alt="Orders" />
-          <p>Orders</p>
+          <p>Dashboard</p>
         </div>
       </div>
     </div>

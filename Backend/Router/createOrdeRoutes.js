@@ -4,9 +4,9 @@ import {
   createOrderItem,
   getOrderItems,
   getUserOrders,
-  getAllOrders  // ✅ Nova função para listar todos os pedidos
+  getAllOrdersWithItems
 } from '../Controller/orderController.js';
-import { authenticateToken } from '../Middleware/authtenticationToken.js';
+import {authenticateToken } from '../Middleware/authtenticationToken.js';
 
 const router = express.Router();
 
@@ -16,14 +16,13 @@ router.post('/orders', authenticateToken, createOrder);
 // Obter pedidos do usuário autenticado
 router.get('/orders/user', authenticateToken, getUserOrders);
 
-// Obter todos os pedidos (Admin) - ✅ Sem autenticação
-router.get('/foods-admin', getAllOrders);
+// Obter todos os pedidos com itens (somente admin)
+router.get('/orders/all', authenticateToken, getAllOrdersWithItems);
 
 // Criar item de pedido
-router.post('/order-items', createOrderItem);
+router.post('/order-items',  createOrderItem);
 
 // Obter itens de um pedido específico
-router.get('/order-items/:order_id', getOrderItems);
+router.get('/order-items/:order_id', authenticateToken, getOrderItems);
 
 export default router;
-

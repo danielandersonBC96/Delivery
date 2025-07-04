@@ -12,6 +12,7 @@ import AdminListProduct from './Pages/List/AdminListProduct';
 import PagesDetails from './Pages/FoodDetails/PagesDetails';
 import ProfileUser from './Pages/ProFileUsers/ProfileUser';
 import AdminOrderPayment from './Pages/Order/AdminOrderPayment';
+import { SendRequest } from './Pages/SendRequest/SendRequest';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false); // Inicia sem mostrar a tela de login
@@ -31,6 +32,7 @@ const App = () => {
             <Route path='/orders' element={<AdminOrderPayment/>}/>
             <Route path='/product/:id' element={<PagesDetails />} /> {/* Rota de detalhe do produto */}
             <Route path='/cart' element={<Cart />} />
+            <Route path='/sendrequest' element={<SendRequest/>}/>
           </Routes>
           <Footer />
         </>

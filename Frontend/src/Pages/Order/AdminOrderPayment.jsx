@@ -1,9 +1,11 @@
+// src/pages/AdminOrderPayment.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
+import { useNavigate } from 'react-router-dom'; // ✅ Importado
 import './AdminOrderPayment.css';
 
-const socket = io('http://localhost:4000');
+const socket = io('http://localhost:4000', { transports: ['websocket'] });
 
 const AdminOrderPayment = () => {
   const [orders, setOrders] = useState([]);
@@ -11,31 +13,33 @@ const AdminOrderPayment = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
-  // Estado dos filtros temporários (inputs)
   const [monthInput, setMonthInput] = useState('');
   const [dayInput, setDayInput] = useState('');
-
-  // Estado dos filtros efetivos (que aplicam filtro)
   const [monthFilter, setMonthFilter] = useState('');
   const [dayFilter, setDayFilter] = useState('');
+
+  const navigate = useNavigate(); // ✅ Criado
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username') || 'Admin';
     setUsername(storedUsername);
 
-    const fetchAllOrders = async () => {
+    const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/foods-admin');
-        setOrders(response.data.orders || []);
+        const token = localStorage.getItem('token');
+        const res = await axios.get('http://localhost:4000/api/orders/all', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setOrders(res.data.orders || []);
       } catch (error) {
         console.error('Erro ao buscar pedidos:', error);
       }
     };
 
-    fetchAllOrders();
+    fetchOrders();
 
     socket.on('newOrder', (newOrder) => {
-      setOrders((prevOrders) => [newOrder, ...prevOrders]);
+      setOrders((prev) => [newOrder, ...prev]);
     });
 
     return () => {
@@ -43,76 +47,50 @@ const AdminOrderPayment = () => {
     };
   }, []);
 
-  // Aplica filtro apenas com os filtros efetivos
-  const filteredOrders = monthFilter
-    ? orders.filter(order => {
-        const orderDate = new Date(order.created_at);
-        const [yearFilter, monthFilterNum] = monthFilter.split('-').map(Number);
-        return (
-          orderDate.getFullYear() === yearFilter &&
-          orderDate.getMonth() + 1 === monthFilterNum
-        );
-      })
-    : orders;
+  const filteredOrders = orders.filter((order) => {
+    const date = new Date(order.created_at);
+    const [year, month] = monthFilter.split('-').map(Number);
+    const day = Number(dayFilter);
 
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+    const isSameMonth = monthFilter
+      ? date.getFullYear() === year && date.getMonth() + 1 === month
+      : true;
 
-  const totalFaturamento = filteredOrders.reduce((sum, order) => sum + (order.total || 0), 0);
-  const faturamentoMes = totalFaturamento;
+    const isSameDay = dayFilter ? date.getDate() === day : true;
 
-  // Faturamento do dia com filtro aplicado
-  const faturamentoDia = orders.reduce((sum, order) => {
-    if (!monthFilter || !dayFilter) return sum;
+    return isSameMonth && isSameDay;
+  });
 
-    const orderDate = new Date(order.created_at);
-    const [yearFilter, monthFilterNum] = monthFilter.split('-').map(Number);
+  const currentOrders = filteredOrders.slice(
+    (currentPage - 1) * ordersPerPage,
+    currentPage * ordersPerPage
+  );
 
-    const orderYear = orderDate.getFullYear();
-    const orderMonth = orderDate.getMonth() + 1;
-    const orderDay = orderDate.getDate();
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
-    const dayToCheck = Number(dayFilter);
-
-    if (
-      orderYear === yearFilter &&
-      orderMonth === monthFilterNum &&
-      orderDay === dayToCheck
-    ) {
-      return sum + (order.total || 0);
-    }
-    return sum;
-  }, 0);
-
-  const handleNextPage = () => {
-    if (indexOfLastOrder < filteredOrders.length) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
-
-  // Função para aplicar os filtros quando clicar em buscar
   const handleApplyFilters = () => {
     setMonthFilter(monthInput);
     setDayFilter(dayInput);
     setCurrentPage(1);
   };
 
+  const faturamentoTotal = filteredOrders.reduce((acc, o) => acc + (o.total || 0), 0);
+  const faturamentoDia = filteredOrders
+    .filter((o) => {
+      const date = new Date(o.created_at);
+      return date.getDate() === Number(dayFilter);
+    })
+    .reduce((acc, o) => acc + (o.total || 0), 0);
+
   return (
     <div className="admin-layout">
       <aside className="sidebar">
         <h2>Admin</h2>
         <ul>
-          <li>📋 Pedidos</li>
-          <li>🍔 Produtos</li>
-          <li>👥 Usuários</li>
-          <li>⚙️ Configurações</li>
+          <li onClick={() => navigate('/sendrequest')} style={{ cursor: 'pointer' }}>
+            📋 Enviar Pedidos
+          </li>
+          <li>⚙️ Sair</li>
         </ul>
       </aside>
 
@@ -125,16 +103,15 @@ const AdminOrderPayment = () => {
         <main className="content">
           <h2>Pedidos Recebidos</h2>
 
-          {/* Filtros */}
           <div className="filter-container">
-            <label htmlFor="monthFilter">Filtrar por mês: </label>
+            <label htmlFor="monthFilter">Filtrar por mês:</label>
             <input
               id="monthFilter"
               type="month"
               value={monthInput}
               onChange={(e) => {
                 setMonthInput(e.target.value);
-                setDayInput(''); // Resetar dia ao trocar mês
+                setDayInput('');
               }}
             />
 
@@ -161,22 +138,21 @@ const AdminOrderPayment = () => {
             <button
               onClick={handleApplyFilters}
               disabled={!monthInput || !dayInput}
-              style={{ marginLeft: '1rem', padding: '0.4rem 1rem', cursor: (!monthInput || !dayInput) ? 'not-allowed' : 'pointer' }}
+              style={{ marginLeft: '1rem', padding: '0.4rem 1rem' }}
             >
               Buscar
             </button>
           </div>
 
-          {/* Cards de faturamento */}
           <div className="faturamento-wrapper">
             <div className="faturamento-box">
               <h3>📈 Faturamento Total</h3>
-              <p>R$ {totalFaturamento.toFixed(2)}</p>
+              <p>R$ {faturamentoTotal.toFixed(2)}</p>
             </div>
 
             <div className="faturamento-box">
               <h3>📅 Faturamento do Mês</h3>
-              <p>R$ {faturamentoMes.toFixed(2)}</p>
+              <p>R$ {faturamentoTotal.toFixed(2)}</p>
             </div>
 
             <div className="faturamento-box">
@@ -211,8 +187,8 @@ const AdminOrderPayment = () => {
                         <td>{order.customer_name}</td>
                         <td>{order.phone_number}</td>
                         <td>{order.payment_method}</td>
-                        <td>R$ {order.discount ? order.discount.toFixed(2) : '0.00'}</td>
-                        <td>R$ {order.total ? order.total.toFixed(2) : '0.00'}</td>
+                        <td>R$ {order.discount?.toFixed(2) || '0.00'}</td>
+                        <td>R$ {order.total?.toFixed(2) || '0.00'}</td>
                         <td>{new Date(order.created_at).toLocaleString()}</td>
                       </tr>
                     ))}
@@ -221,15 +197,15 @@ const AdminOrderPayment = () => {
               </div>
 
               <div className="pagination">
-                <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                <button onClick={() => setCurrentPage((prev) => prev - 1)} disabled={currentPage === 1}>
                   ◀ Anterior
                 </button>
                 <span>
-                  Página {currentPage} de {Math.ceil(filteredOrders.length / ordersPerPage)}
+                  Página {currentPage} de {totalPages}
                 </span>
                 <button
-                  onClick={handleNextPage}
-                  disabled={indexOfLastOrder >= filteredOrders.length}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                  disabled={currentPage >= totalPages}
                 >
                   Próxima ▶
                 </button>

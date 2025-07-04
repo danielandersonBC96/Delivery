@@ -23,12 +23,14 @@ const port = process.env.PORT || 4000;
 const server = http.createServer(app);
 
 // Configura o Socket.io com CORS liberado para seu front-end
+// Configura o Socket.io com CORS liberado para seu front-end
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // ajuste para a porta do seu React (geralmente 3000)
+    origin: 'http://localhost:5173', // ✅ Porta correta do Vite
     methods: ['GET', 'POST']
   }
 });
+
 
 // Para permitir que seus controllers emitam eventos, você pode guardar o 'io' no app locals
 app.set('io', io);

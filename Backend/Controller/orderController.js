@@ -1,8 +1,6 @@
 import db from '../Config/database.js';
 import { notifyNewOrder } from '../server.js'; // Para emitir eventos via Socket.io
 
-
-
 // Buscar pedidos de um usuário específico
 export const getUserOrders = (req, res) => {
   const userId = req.userId;
@@ -75,21 +73,28 @@ export const createOrder = (req, res) => {
 
     Promise.all(insertItems)
       .then(() => {
-        const newOrderData = {
-          id: orderId,
-          user_id,
-          total: totalAmount,
-          paymentMethod,
-          customerName,
-          phoneNumber,
-          discount,
-          created_at: new Date()
-        };
+        const getItemsQuery = `SELECT * FROM order_items WHERE order_id = ?`;
+        db.all(getItemsQuery, [orderId], (errItems, items) => {
+          if (errItems) {
+            console.error('Erro ao buscar itens do pedido para WebSocket:', errItems.message);
+          }
 
-        // 🔔 Notifica via WebSocket (ex: para painel admin em tempo real)
-        notifyNewOrder(newOrderData);
+          const newOrderData = {
+            id: orderId,
+            user_id,
+            total: totalAmount,
+            payment_method: paymentMethod,
+            customer_name: customerName,
+            phone_number: phoneNumber,
+            discount,
+            created_at: new Date().toISOString(),
+            items: items || []
+          };
 
-        res.status(201).json({ message: 'Pedido criado com sucesso', orderId });
+          notifyNewOrder(newOrderData); // envia tudo para o painel admin
+
+          res.status(201).json({ message: 'Pedido criado com sucesso', orderId });
+        });
       })
       .catch(err => {
         res.status(500).json({ message: 'Erro ao adicionar itens ao pedido', error: err.message });
@@ -97,24 +102,72 @@ export const createOrder = (req, res) => {
   });
 };
 
-
-
-export const getAllOrders = (req, res) => {
+// Buscar todos os pedidos com seus itens - para admin
+export const getAllOrdersWithItems = (req, res) => {
   const query = `
-    SELECT id, user_id, total, payment_method, customer_name, phone_number, discount, created_at
-    FROM orders
-    ORDER BY id DESC
+    SELECT
+      o.id AS order_id,
+      o.user_id,
+      o.total,
+      o.payment_method,
+      o.customer_name,
+      o.phone_number,
+      o.discount,
+      o.created_at,
+      oi.id AS order_item_id,
+      oi.food_id,
+      oi.quantity,
+      oi.price,
+      oi.name AS item_name,
+      oi.description AS item_description,
+      oi.image AS item_image
+    FROM orders o
+    LEFT JOIN order_items oi ON o.id = oi.order_id
+    ORDER BY o.id DESC, oi.id;
   `;
 
   db.all(query, [], (err, rows) => {
     if (err) {
-      return res.status(500).json({ message: 'Erro ao buscar os pedidos', error: err.message });
+      return res.status(500).json({ message: 'Erro ao buscar pedidos com itens', error: err.message });
     }
-    res.status(200).json({ orders: rows });
+
+    const ordersMap = new Map();
+
+    rows.forEach(row => {
+      const orderId = row.order_id;
+
+      if (!ordersMap.has(orderId)) {
+        ordersMap.set(orderId, {
+          id: orderId,
+          user_id: row.user_id,
+          total: row.total,
+          payment_method: row.payment_method,
+          customer_name: row.customer_name,
+          phone_number: row.phone_number,
+          discount: row.discount,
+          created_at: row.created_at,
+          items: []
+        });
+      }
+
+      if (row.order_item_id) {
+        ordersMap.get(orderId).items.push({
+          id: row.order_item_id,
+          food_id: row.food_id,
+          quantity: row.quantity,
+          price: row.price,
+          name: row.item_name,
+          description: row.item_description,
+          image: row.item_image
+        });
+      }
+    });
+
+    const ordersArray = Array.from(ordersMap.values());
+
+    res.status(200).json({ orders: ordersArray });
   });
 };
-
-
 
 // Criar um item de pedido individual
 export const createOrderItem = (req, res) => {
