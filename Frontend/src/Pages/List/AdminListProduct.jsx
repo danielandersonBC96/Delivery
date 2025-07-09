@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext } from 'react';
 import NavBarAdmin from '../../Components/NavBarAdmin/NavBarAdmin';
 import Sidebar from '../../Components/SidbarAdmin/Sidbar';
 import './AdminListProduct.css';
-import { StoreContext } from '../../Content/StoreContent'; // ✅ Importação do contexto
+import { StoreContext } from '../../Content/StoreContent';
 
-import { FiTrash2, FiEdit } from 'react-icons/fi'; // <-- Import dos ícones React Icons
+import { FiTrash2, FiEdit, FiBox, FiTag } from 'react-icons/fi';
 
 const AdminListProduct = () => {
   const [foods, setFoods] = useState([]);
@@ -17,7 +17,7 @@ const AdminListProduct = () => {
   const [selectedFood, setSelectedFood] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { fetchFoodList } = useContext(StoreContext); // ✅ Uso do contexto
+  const { fetchFoodList } = useContext(StoreContext);
 
   useEffect(() => {
     const fetchFoods = async () => {
@@ -48,7 +48,7 @@ const AdminListProduct = () => {
       if (!response.ok) throw new Error('Erro ao excluir o alimento');
 
       setFoods((prevFoods) => prevFoods.filter((food) => food.name !== name));
-      await fetchFoodList(); // ✅ Atualiza menu automaticamente
+      await fetchFoodList();
       showAlert('Alimento deletado com sucesso');
     } catch (err) {
       console.error(err.message);
@@ -95,7 +95,7 @@ const AdminListProduct = () => {
         )
       );
 
-      await fetchFoodList(); // ✅ Atualiza menu automaticamente
+      await fetchFoodList();
       showAlert('Alimento atualizado com sucesso');
       setIsModalOpen(false);
     } catch (err) {
@@ -112,8 +112,16 @@ const AdminListProduct = () => {
 
   const showAlertError = (message) => {
     setAlertError(message);
-    setAlertMessage('');
     setTimeout(() => setAlertError(''), 3000);
+  };
+
+  const getCategoryCounts = (foods) => {
+    const counts = {};
+    foods.forEach((food) => {
+      const category = food.category || 'Sem Categoria';
+      counts[category] = (counts[category] || 0) + 1;
+    });
+    return Object.entries(counts);
   };
 
   const limit = 10;
@@ -128,7 +136,29 @@ const AdminListProduct = () => {
       <div className="app-content">
         <Sidebar />
         <div className="product-list">
-          <p className="lista-p">Lista de Alimentos</p>
+          <div className="dashboard-header">
+            <p className="lista-p">Lista de Alimentos</p>
+            <div className="summary-cards">
+              <div className="summary-card total">
+                <FiBox size={24} />
+                <div>
+                  <h3>Total de Alimentos</h3>
+                  <p>{foods.length}</p>
+                </div>
+              </div>
+
+              {getCategoryCounts(foods).map(([category, count]) => (
+                <div className="summary-card" key={category}>
+                  <FiTag size={20} />
+                  <div>
+                    <h3>{category}</h3>
+                    <p>{count} item(s)</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <table className="product-table">
             <thead>
               <tr>
@@ -211,6 +241,10 @@ const AdminListProduct = () => {
 };
 
 export default AdminListProduct;
+
+// ----------------------------
+// Modal EditFoodModal permanece igual abaixo
+
 
 // ------------------------------------------------------
 // Modal EditFoodModal incluído aqui para facilitar:

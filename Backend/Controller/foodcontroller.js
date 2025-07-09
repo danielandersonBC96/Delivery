@@ -81,44 +81,45 @@ export const updateFood = async (req, res) => {
         return res.status(500).json({ message: 'Erro ao atualizar produto' });
     }
 };
-
 export const getAllFoods = (req, res) => {
-    const { page = 0, limit = 10 } = req.query; // Padrão: página 0, 10 itens por página
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
 
-    // Calcula o offset para o banco de dados
-    const offset = page * limit; // O offset deve ser multiplicado pela página
+  // Se não houver paginação, buscar todos
+  const usePagination = !isNaN(page) && !isNaN(limit);
 
-    // Consulta para obter os alimentos com limite e offset
-    const sql = `SELECT * FROM foods LIMIT ? OFFSET ?`;
+  const sql = usePagination
+    ? `SELECT * FROM foods LIMIT ? OFFSET ?`
+    : `SELECT * FROM foods`;
 
-    db.all(sql, [Number(limit), Number(offset)], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
+  const params = usePagination ? [limit, page * limit] : [];
 
-        // Retorna as URLs das imagens completas
-        const foodsWithImageUrls = rows.map(food => ({
-            ...food,
-            image: food.image ? `http://localhost:4000/uploads/${food.image.replace('uploads/', '')}` : 'http://localhost:4000/uploads/default-image.png' // Provide a default image if food.image is null
-        }));
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
 
-        // Consulta para contar o total de alimentos
-        const countSql = `SELECT COUNT(*) as total FROM foods`;
+    const foodsWithImageUrls = rows.map(food => ({
+      ...food,
+      image: food.image
+        ? `http://localhost:4000/uploads/${food.image.replace('uploads/', '')}`
+        : 'http://localhost:4000/uploads/default-image.png'
+    }));
 
-        db.get(countSql, [], (err, countRow) => {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
+    // Total de registros
+    db.get(`SELECT COUNT(*) as total FROM foods`, [], (err, countRow) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
 
-            // Envia a resposta com dados e informações de paginação
-            res.json({
-                data: foodsWithImageUrls, // Lista de alimentos
-                totalCount: countRow.total, // Total de alimentos
-                page: Number(page), // Página atual
-                limit: Number(limit) // Limite de itens por página
-            });
-        });
+      res.json({
+        data: foodsWithImageUrls,
+        totalCount: countRow.total,
+        page: usePagination ? page : 0,
+        limit: usePagination ? limit : countRow.total
+      });
     });
+  });
 };
 
 

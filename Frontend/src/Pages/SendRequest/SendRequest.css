@@ -202,19 +202,31 @@ body, html {
   text-transform: capitalize;
 }
 
-.status.pendente {
+.status-pendente {
   background-color: #f1c40f; /* amarelo */
   color:white;
   border-radius: 30px;
+  padding: 10px;
 }
 
-.status.enviado {
+.status-enviado {
   background-color: #27ae60; /* verde */
   color: #fff;
   border-radius: 30px;
+  padding: 10px;
 }
 
 .status.pedido-novamente {
   background-color: #bdc3c7; /* cinza */
-  color: #333;
+  color: blue;
+}
+
+
+.status-nao-enviado {
+  background-color: #e74c3c; /* vermelho */
+  color: white;
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-weight: bold;
+  padding: 10px;
 }

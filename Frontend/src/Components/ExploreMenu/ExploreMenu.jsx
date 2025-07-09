@@ -37,7 +37,7 @@ const ExploreMenu = ({ category, setCategory }) => {
   return (
     <div className="explore-menu" id="explore-menu">
       <div className="explore-menu-header">
-        <h1>Explore Menu</h1>
+        <h1>Explore o Menu</h1>
         <FiMenu className="menu-icon" />
       </div>
       <p className="explore-menu-text">Explore todos os tipos de comidas</p>

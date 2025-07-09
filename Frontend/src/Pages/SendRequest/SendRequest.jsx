@@ -10,7 +10,6 @@ export const SendRequest = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 5;
   const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,13 +25,17 @@ export const SendRequest = () => {
 
         const allOrders = response.data.orders || [];
 
-        const ordersWithItems = allOrders.map(order => ({
-          ...order,
-          customerName: order.customerName || order.customer_name || order.user?.email || 'Desconhecido',
-          purchaseDate: formatPurchaseDate(order.createdAt || order.created_at || new Date()),
-          status: order.status || 'Pendente',
-          items: Array.isArray(order.items) ? order.items : []
-        }));
+        const ordersWithItems = allOrders.map(order => {
+          const rawDate = new Date(order.createdAt || order.created_at || new Date());
+          return {
+            ...order,
+            rawDate,
+            customerName: order.customerName || order.customer_name || order.user?.email || 'Desconhecido',
+            purchaseDate: formatPurchaseDate(rawDate),
+            status: order.status || 'Pendente',
+            items: Array.isArray(order.items) ? order.items : []
+          };
+        });
 
         setOrders(ordersWithItems);
       } catch (error) {
@@ -45,15 +48,19 @@ export const SendRequest = () => {
     fetchOrders();
   }, []);
 
-  const formatPurchaseDate = (purchaseDate) => {
+  const formatPurchaseDate = (date) => {
     const today = new Date();
-    const purchaseDateTime = new Date(purchaseDate);
-    const diffTime = Math.abs(today - purchaseDateTime);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
+    const diffTime = today.setHours(0, 0, 0, 0) - date.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return 'Hoje';
     if (diffDays === 1) return 'Ontem';
-    return purchaseDateTime.toLocaleDateString();
+    return date.toLocaleDateString();
+  };
+
+  const isOlderThanOneDay = (date) => {
+    const now = new Date();
+    const diff = now - date;
+    return diff > 24 * 60 * 60 * 1000;
   };
 
   const indexOfLastOrder = currentPage * ordersPerPage;
@@ -84,8 +91,8 @@ export const SendRequest = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setOrders(prevOrders =>
-        prevOrders.map(o =>
+      setOrders(prev =>
+        prev.map(o =>
           (o._id || o.id) === (order._id || order.id)
             ? { ...o, status: 'Enviado' }
             : o
@@ -144,8 +151,18 @@ export const SendRequest = () => {
                       <td>{order.customerName}</td>
                       <td>{order.purchaseDate}</td>
                       <td>
-                        <span className={`status ${order.status.toLowerCase().replace(/\s/g, '-')}`}>
-                          {order.status}
+                        <span className={
+                          order.status === 'Enviado'
+                            ? 'status-enviado'
+                            : isOlderThanOneDay(order.rawDate)
+                            ? 'status-nao-enviado'
+                            : 'status-pendente'
+                        }>
+                          {order.status === 'Enviado'
+                            ? 'Enviado'
+                            : isOlderThanOneDay(order.rawDate)
+                            ? 'Não Enviado'
+                            : 'Pendente'}
                         </span>
                       </td>
                       <td>R$ {(order.total || 0).toFixed(2)}</td>

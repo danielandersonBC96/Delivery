@@ -1,5 +1,4 @@
 .food-display {
-
     margin-top: 30px;
     margin-bottom: 50px;
 }
@@ -17,27 +16,49 @@
     row-gap: 50px;
 }
 
-/* Estilos responsivos */
+/* Novo estilo para os cards */
+.food-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 300px; /* Altura fixa para todos os cards */
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
     .food-display h2 {
-        font-size: max(4vw, 20px); /* Aumenta a responsividade do título em telas menores */
+        font-size: max(4vw, 20px);
     }
 
     .food-display-list {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Reduz o tamanho mínimo dos itens */
-        gap: 20px; /* Reduz o espaçamento entre os itens */
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
         row-gap: 30px;
+    }
+
+    .food-card {
+        height: 260px;
     }
 }
 
 @media (max-width: 480px) {
     .food-display h2 {
-        font-size: max(6vw, 18px); /* Ainda menor para telas muito pequenas */
+        font-size: max(6vw, 18px);
     }
 
     .food-display-list {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Reduz ainda mais o tamanho mínimo dos itens */
-        gap: 15px; /* Reduz ainda mais o espaçamento para melhor ajuste */
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
         row-gap: 20px;
+    }
+
+    .food-card {
+        height: 220px;
     }
 }

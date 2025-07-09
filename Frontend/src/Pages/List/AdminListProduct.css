@@ -563,3 +563,55 @@
   background-color: #c82333;
 }
 
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 30px;
+  background-color:white;
+  border-radius: 30PX;
+  padding: 20PX;
+}
+
+.summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  cursor: pointer;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-left: 5px solid tomato;
+  padding: 16px;
+  border-radius: 8px;
+  min-width: 200px;
+  flex: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  gap: 10px;
+}
+
+.summary-card.total {
+  border-left-color: #28a745;
+}
+
+.summary-card h3 {
+  font-size: 14px;
+  margin: 0;
+  color: #555;
+}
+
+.summary-card p {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 4px 0 0;
+  color: rgba(0, 0, 0, 0.267);
+}
+
+@media (max-width: 600px) {
+  .summary-cards {
+    flex-direction: column;
+  }
+}
