@@ -10,7 +10,7 @@ import db from './Config/database.js';
 import foodRoutes from './Router/foodRouter.js';
 import userRoutes from './Router/userRoutes.js';
 import orderRoutes from './Router/createOrdeRoutes.js';
-import categoryRoutes from  './Router/categoryRouter.js'
+import categoryRoutes from './Router/categoryRouter.js';
 
 dotenv.config();
 
@@ -23,22 +23,32 @@ const port = process.env.PORT || 4000;
 // Cria o servidor HTTP para ser usado pelo socket.io e express
 const server = http.createServer(app);
 
-// Configura o Socket.io com CORS liberado para seu front-end
-// Configura o Socket.io com CORS liberado para seu front-end
+// CORS permitido para desenvolvimento e produção (Vite + Vercel)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://delivery-br1d.vercel.app'
+];
+
+// Middleware CORS para o Express
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
+// Configura o Socket.io com CORS liberado
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // ✅ Porta correta do Vite
+    origin: allowedOrigins,
     methods: ['GET', 'POST']
   }
 });
-
 
 // Para permitir que seus controllers emitam eventos, você pode guardar o 'io' no app locals
 app.set('io', io);
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
 
 // Servir uploads estáticos
 app.use('/uploads', express.static(path.join(__dirname, 'Config', 'Uploads')));
