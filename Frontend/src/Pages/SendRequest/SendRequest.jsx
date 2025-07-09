@@ -11,9 +11,6 @@ export const SendRequest = () => {
   const ordersPerPage = 5;
   const [loading, setLoading] = useState(true);
 
-  const [monthInput, setMonthInput] = useState('');
-  const [dayInput, setDayInput] = useState('');
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,17 +56,10 @@ export const SendRequest = () => {
     return purchaseDateTime.toLocaleDateString();
   };
 
-  const filteredOrders = orders.filter(order => {
-    const date = new Date(order.createdAt || order.created_at);
-    const matchMonth = monthInput ? (date.getMonth() + 1).toString() === monthInput : true;
-    const matchDay = dayInput ? date.getDate().toString() === dayInput : true;
-    return matchMonth && matchDay;
-  });
-
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -153,7 +143,11 @@ export const SendRequest = () => {
                       <td>{order.id || order._id}</td>
                       <td>{order.customerName}</td>
                       <td>{order.purchaseDate}</td>
-                      <td>{order.status}</td>
+                      <td>
+                        <span className={`status ${order.status.toLowerCase().replace(/\s/g, '-')}`}>
+                          {order.status}
+                        </span>
+                      </td>
                       <td>R$ {(order.total || 0).toFixed(2)}</td>
                       <td>
                         <details>
@@ -181,7 +175,7 @@ export const SendRequest = () => {
                 </tbody>
               </table>
 
-              {filteredOrders.length > ordersPerPage && (
+              {orders.length > ordersPerPage && (
                 <div className="pagination">
                   <button onClick={handlePrevPage} disabled={currentPage === 1}>
                     Anterior

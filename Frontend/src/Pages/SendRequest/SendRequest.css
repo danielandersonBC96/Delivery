@@ -1,0 +1,220 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f7f7;
+}
+
+/* Layout principal */
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar1 {
+  background-color: tomato;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  border-radius: 30px;
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navbar-user {
+  font-size: 1rem;
+}
+
+/* Wrapper principal */
+.main-wrapper {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: tomato;
+  color: white;
+  padding: 2rem 1rem;
+}
+
+.sidebar h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 0.8rem 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.sidebar li:hover {
+  background-color: orangered;
+}
+
+/* Conteúdo principal */
+.profile-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.profile-content h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+/* Tabela */
+.table-responsive {
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.purchase-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.purchase-table thead {
+  background-color: tomato;
+  color: white;
+}
+
+.purchase-table th, .purchase-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+.purchase-table td details summary {
+  cursor: pointer;
+  color:green;
+  margin-bottom: 0.5rem;
+}
+
+/* Botão de envio */
+.btn-send-order {
+  padding: 0.5rem 1rem;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-send-order:disabled {
+  background-color: tomato;
+  cursor: not-allowed;
+}
+
+.btn-send-order:hover:not(:disabled) {
+  background-color: #219150;
+}
+
+/* Paginação */
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination button {
+  padding: 0.4rem 1rem;
+  background-color: tomato;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .main-wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar h2 {
+    justify-content: center;
+  }
+
+  .sidebar li {
+    justify-content: center;
+  }
+
+  .profile-content {
+    padding: 1rem;
+  }
+
+  .purchase-table th, .purchase-table td {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+}
+.status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.status.pendente {
+  background-color: #f1c40f; /* amarelo */
+  color:white;
+  border-radius: 30px;
+}
+
+.status.enviado {
+  background-color: #27ae60; /* verde */
+  color: #fff;
+  border-radius: 30px;
+}
+
+.status.pedido-novamente {
+  background-color: #bdc3c7; /* cinza */
+  color: #333;
+}

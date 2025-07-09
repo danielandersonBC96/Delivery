@@ -10,7 +10,7 @@ import db from './Config/database.js';
 import foodRoutes from './Router/foodRouter.js';
 import userRoutes from './Router/userRoutes.js';
 import orderRoutes from './Router/createOrdeRoutes.js';
-import categoryRoutes from  './Router/categoryRouter.js'
+import categoryRoutes from './Router/categoryRouter.js';
 
 dotenv.config();
 
@@ -20,30 +20,38 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Cria o servidor HTTP para ser usado pelo socket.io e express
+// Cria o servidor HTTP para o Express e Socket.io
 const server = http.createServer(app);
 
-// Configura o Socket.io com CORS liberado para seu front-end
-// Configura o Socket.io com CORS liberado para seu front-end
+// Lista de origens permitidas (local + produção)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://delivery-br1d.vercel.app',
+];
+
+// Configuração do Socket.IO com CORS liberado
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // ✅ Porta correta do Vite
-    methods: ['GET', 'POST']
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
-
-// Para permitir que seus controllers emitam eventos, você pode guardar o 'io' no app locals
+// Permitir acesso ao objeto io em qualquer lugar da aplicação
 app.set('io', io);
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
-// Servir uploads estáticos
+// Servir imagens e arquivos de upload
 app.use('/uploads', express.static(path.join(__dirname, 'Config', 'Uploads')));
 
-// Rotas da API
+// Rotas principais
 app.get('/', (req, res) => {
   res.send('API Working com Socket.io');
 });
@@ -53,12 +61,12 @@ app.use('/api/foods', foodRoutes);
 app.use('/users', userRoutes);
 app.use('/category', categoryRoutes);
 
-// Middleware para rotas não encontradas
+// Middleware de rota não encontrada
 app.use((req, res) => {
   res.status(404).json({ message: 'Rota não encontrada' });
 });
 
-// Socket.io conexão
+// Socket.io: escutando conexões
 io.on('connection', (socket) => {
   console.log('Novo cliente conectado via WebSocket:', socket.id);
 
@@ -67,12 +75,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Função para notificar novos pedidos
+// Função para emitir eventos de novos pedidos
 export const notifyNewOrder = (order) => {
-  io.emit('newOrder', order); // Envia o evento para todos os clientes conectados
+  io.emit('newOrder', order);
 };
 
-// Inicializa o servidor HTTP + Socket.io
+// Iniciar o servidor
 server.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });
