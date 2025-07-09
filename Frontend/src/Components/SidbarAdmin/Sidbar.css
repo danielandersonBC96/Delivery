@@ -34,26 +34,33 @@
 
 /* Efeito ao passar o mouse sobre uma opção */
 
-/* Estiliza as imagens dentro das opções */
-.sidebar-option img {
-  width: 28px; /* Aumentado para um ícone mais proeminente */
-  height: 28px;
-  margin-right: 15px;
+.sidebar {
+  width: 220px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Estiliza o texto dentro das opções */
-.sidebar-option p {
+.sidebar-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+
+.sidebar-option svg {
+  margin-right: 8px;
   color: white;
-  font-size: 16px;
-  margin: 0;
-  font-weight: 500; /* Texto um pouco mais forte */
-  transition: color 0.3s ease; /* Suave transição de cor */
+  font-size: 18px;
 }
 
-.sidebar-option:hover p {
-  color:   black;
- 
-}
 
 /* Responsividade */
 @media (max-width: 768px) {

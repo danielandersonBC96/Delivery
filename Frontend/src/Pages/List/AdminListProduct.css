@@ -1,451 +1,565 @@
-/* Container Styling */
-.icon-tablea {
-    display: flex;
-    gap: 8px; /* Ajuste o espaço entre os ícones */
-    background-color: #fff; /* Fundo branco com 50% de opacidade */
-    padding: 8px; /* Ajuste o padding conforme necessário */
-    border-radius: 10px; /* Deixe as bordas arredondadas */
-    border: 1px solid tomato;
+/* Container geral */
+.admin-list {
+  flex: 1;
+  padding: 20px;
+  margin: 0;
+  background-color: whitesmoke;
+  border-radius: 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
 }
-.lista-p{
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-.admin-list{
-    flex: 1;
-    padding: 20px;
-    margin: 0;
-    background-color:   whitesmoke;
-    border-radius: 15px;
-    border-collapse: collapse;
-}
+
+/* Área principal: Sidebar + Conteúdo */
 .app-content {
-    display: flex;
-    flex-direction: row;
-    padding: 0;
-    margin: 0;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
+/* Sidebar fixo */
 .Sidebar {
-    width: 250px;
+  width: 250px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
+  padding: 20px;
+  height: fit-content;
 }
 
+/* Conteúdo principal (lista e formulário) */
 .product-list {
-    flex: 1;
-    padding: 20px;
-    margin: 0;
-    background-color: #f4f4f4;
+  flex: 1;
+  padding: 20px;
+  margin: 0;
+  background-color: #f4f4f4;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.05);
 }
 
-/* Heading */
-.product-list h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+/* Título da lista */
+.lista-p {
+  margin: 30px 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #333;
+  user-select: none;
+  text-align: center;
 }
 
-/* Table Styling */
+/* Tabela de produtos */
 .product-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
-    border-radius: 8px;
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 }
 
-.product-table th, 
+.product-table th,
 .product-table td {
-    padding: 12px 15px;
-    text-align: center;
-    color: #333;
+  padding: 12px 15px;
+  text-align: center;
+  color: #333;
+  border-bottom: 1px solid #ddd;
 }
 
 .product-table th {
-    background-color: tomato;
-    color: white;
-    font-weight: bold;
+  background-color: tomato;
+  color: white;
+  font-weight: 700;
+  user-select: none;
 }
 
 .product-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
-/* Image Styling */
+.product-table tbody tr:hover {
+  background-color: #ffe6e1;
+  transition: background-color 0.3s ease;
+}
+
+/* Imagens dentro da tabela */
 .product-table img {
-    width: 80px;
-    height: auto;
-    border-radius: 5px;
+  width: 80px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
-/* Button Styling */
-.product-table button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 2px;
-}
-
-.product-table button:hover {
-    opacity: 0.8;
-}
-
-button:focus {
-    outline: none;
-}
-
-/* Actions Button Colors */
-.product-table button:first-of-type {
-    background-color: #FFA500; /* Edit Button */
-    color: white;
-}
-
-.product-table button:nth-of-type(2) {
-    background-color: #d9534f; /* Delete Button */
-    color: white;
-}
-
-.product-table button:last-of-type {
-    background-color: #555; /* Exclude Button */
-    color: white;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .app-content {
-        flex-direction: column;
-    }
-
-    .product-list {
-        margin: 0;
-        padding: 10px;
-    }
-
-    .product-table th,
-    .product-table td {
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .product-table img {
-        width: 60px;
-    }
-
-    /* Stack columns on small screens */
-    .product-table, .product-table tbody, .product-table tr, .product-table td {
-        display: block;
-        width: 100%;
-    }
-
-    .product-table tr {
-        margin-bottom: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-    }
-
-    .product-table td {
-        text-align: left;
-        padding-left: 50%;
-        position: relative;
-    }
-
-    .product-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        font-weight: bold;
-        color: #333;
-    }
-}
-/* Button Styling */
-.product-table button {
-    padding: 5px 8px;
-    font-size: 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 5px; /* Small space between buttons */
-}
-
-.product-table button:last-of-type {
-    margin-right: 0; /* Remove margin on the last button */
-}
-
-/* Actions Button Colors */
-.product-table button:first-of-type {
-    background-color: #FFA500; /* Edit Button */
-    color: white;
-}
-
-.product-table button:nth-of-type(2) {
-    background-color: #d9534f; /* Delete Button */
-    color: white;
-}
-
-.product-table button:last-of-type {
-    background-color: #555; /* Exclude Button */
-    color: white;
-}
-/* Icon Styling */
-.product-table td img {
-    width: 20px; /* Set the size of the images */
-    height: auto;
-    margin-right: 8px; /* Space between images */
-    cursor: pointer;
-}
-
-.product-table td img:last-of-type {
-    margin-right: 0; /* Remove margin on the last image */
-}
-.pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.pagination button {
-    display: flex;
-    align-items: center;
-    background-color: red;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-}
-
-.pagination button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.pagination button i {
-    margin-right: 5px; /* Espaçamento entre ícone e texto */
-}
-
-
-.alert-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #4CAF50; /* Verde para sucesso, ajuste conforme necessário */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    font-weight: bold;
-    animation: fadeInOut 3s ease-in-out;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: translateX(100%); }
-    10% { opacity: 1; transform: translateX(0); }
-    90% { opacity: 1; transform: translateX(0); }
-    100% { opacity: 0; transform: translateX(100%); }
-}
-
-alert-error {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: red; /* Verde para sucesso, ajuste conforme necessário */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    font-weight: bold;
-    animation: fadeInOut 3s ease-in-out;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: translateX(100%); }
-    10% { opacity: 1; transform: translateX(0); }
-    90% { opacity: 1; transform: translateX(0); }
-    100% { opacity: 0; transform: translateX(100%); }
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw; /* Full width of the viewport */
-    height: 100vh; /* Full height of the viewport */
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-    padding: 50px; /* Padding around the modal */
-    box-sizing: border-box;
-    overflow: hidden; /* Prevents scrollbars from appearing */
-}
-
-
-.modal-content {
-    position: relative;
-    background: #fff;
-    border-radius: 10px;
-    width: 90%; /* Set a responsive width */
-    max-width: 400px; /* Adjusted for a larger max-width */
-    padding: 20px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease; /* Added transition for scaling effect */
-    max-height: 80vh; /* Set a max-height for responsiveness */
-    overflow-y: auto; /* Allows scrolling if content exceeds max height */
-}
-
-.modal-content:hover {
-    transform: scale(1.02); /* Slight scaling on hover for interactivity */
-}
-
-.close-title {
-    position: absolute;
-    top: -20px;
-    right: 90px;
-}
-
-.close-icon {
-    position: absolute;
-    top: 15px; 
-    right: 45px; /* Adjusted distance for better alignment */
-    width: 35px; /* Reduced icon size for balance */
-    height: 35px; /* Reduced icon size for balance */
-    cursor: pointer;
-    background: white; 
-    border: solid black; 
-    border-radius: 50%; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
-    transition: background 0.3s; 
-     
-}
-
-.close-icon:hover {
-    background: rgba(255, 0, 0, 0.2); /* Milder hover effect */
-}
-
-.modal-title {
-    text-align: center;
-    font-size: 1.5rem;
-    color: tomato;
-    margin-bottom: 20px;
-}
-
-.add-img-upload {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.upload-placeholder, .image-preview {
-    width: 100%;
-    max-width: 150px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
-
-.remove-image-btn {
-    background: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.modal-form .form-group {
-    margin-bottom: 15px;
-}
-
-.input-field {
-    width: 100%;
-    padding: 10px; /* Increased padding for comfort */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box;
-}
-
-.save-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-.save-btn:hover {
-    background-color: rgb(105, 151, 35);
-}
-
-.price {
-    width: 100%; 
-    max-width: 400px; 
-    padding: 10px; 
-    border: 1px solid #ccc; 
-    border-radius: 5px; 
-    font-size: 16px; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
-    transition: border-color 0.3s, box-shadow 0.3s; 
-}
-
-.textarea {
-    width: 100%; /* Full width */
-    max-width: 600px; /* Optional max width */
-    padding: 10px; /* Padding for inner spacing */
-    border: 1px solid #ccc; /* Border color */
-    border-radius: 5px; /* Rounded corners */
-    resize: vertical; /* Allow vertical resizing */
-    font-size: 16px; /* Font size */
-    line-height: 1.5; /* Line height for readability */
-    transition: border-color 0.3s; /* Smooth border color transition */
-}
-
-.textarea:focus {
-    border-color: green; /* Change border color on focus */
-    outline: none; /* Remove default outline */
-    box-shadow: green; /* Optional shadow for focus */
-}
-
-@media (max-width: 768px) {
-    .textarea {
-        padding: 8px; /* Adjust padding on smaller screens */
-    }
-}
-
-
-/* Estilo ao focar no campo */
-.price:focus {
-    border-color: green; 
-    box-shadow: 0 0 5px green; 
-    outline: none; 
-}
-
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%; /* Full width on small screens */
-        padding: 15px; 
-    }
-
-    .modal-title {
-        font-size: 1.25rem;
-    }
-}
-
+/* Ações: ícones e botões */
 .icon-table {
-    display: flex; 
-    gap: 10px; 
-    align-items: center; 
-    justify-content: center; /* Center icons horizontally */
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .icon-table img {
-    width: 24px; /* Set a specific width for uniformity */
-    height: auto; /* Maintain aspect ratio */
-    cursor: pointer; /* Change cursor on hover */
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  user-select: none;
 }
+
+.icon-table img:hover {
+  transform: scale(1.1);
+}
+
+/* Botões genéricos (caso usar) */
+.product-table button {
+  padding: 5px 8px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.product-table button:last-of-type {
+  margin-right: 0;
+}
+
+/* Botões coloridos */
+.product-table button:first-of-type {
+  background-color: #FFA500; /* Editar */
+  color: white;
+}
+
+.product-table button:nth-of-type(2) {
+  background-color: #d9534f; /* Excluir */
+  color: white;
+}
+
+.product-table button:last-of-type {
+  background-color: #555; /* Outro */
+  color: white;
+}
+
+/* Paginação */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
+}
+
+.pagination button {
+  display: flex;
+  align-items: center;
+  background-color: tomato;
+  border: none;
+  padding: 10px 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background-color: #f19987;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #c94b3f;
+}
+
+.pagination button i {
+  margin-right: 6px;
+}
+
+/* Alertas */
+.alert-message,
+.alert-error {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 22px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+  z-index: 1100;
+  font-weight: 700;
+  user-select: none;
+  max-width: 320px;
+  text-align: center;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+.alert-message {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.alert-error {
+  background-color: #e74c3c;
+  color: white;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  90% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  padding: 30px 25px;
+  box-sizing: border-box;
+  box-shadow: 0 6px 15px rgb(0 0 0 / 0.25);
+  max-height: 80vh;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  user-select: none;
+}
+
+.modal-content:hover {
+  transform: scale(1.02);
+}
+
+.close-icon {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  width: 34px;
+  height: 34px;
+  background: white;
+  border: 1.5px solid black;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.close-icon:hover {
+  background-color: rgba(255, 0, 0, 0.15);
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 1.7rem;
+  color: tomato;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* Inputs modal/form */
+.modal-form .form-group {
+  margin-bottom: 20px;
+}
+
+.input-field,
+.price,
+.textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  user-select: text;
+}
+
+.input-field:focus,
+.price:focus,
+.textarea:focus {
+  border-color: green;
+  box-shadow: 0 0 8px green;
+  outline: none;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+}
+
+.price {
+  max-width: 200px;
+}
+
+/* Botão salvar no modal */
+.save-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 700;
+  margin-top: 15px;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: #357a38;
+}
+
+/* Upload placeholder / preview */
+.add-img-upload {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.upload-placeholder,
+.image-preview {
+  width: 150px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 1.5px solid #ddd;
+  user-select: none;
+}
+
+.remove-image-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 600;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.remove-image-btn:hover {
+  background-color: #b32a2a;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .app-content {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .Sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .product-list {
+    width: 100%;
+    margin-bottom: 25px;
+  }
+
+  .product-table th,
+  .product-table td {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .product-table img {
+    width: 60px;
+  }
+
+  /* Table responsive: transform table into cards */
+  .product-table,
+  .product-table tbody,
+  .product-table tr,
+  .product-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .product-table tr {
+    margin-bottom: 20px;
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.1);
+    border-radius: 10px;
+    background: white;
+    padding: 15px;
+  }
+
+  .product-table td {
+    text-align: left;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+    padding-top: 10px;
+  }
+
+  .product-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    font-weight: 700;
+    color: #444;
+    white-space: nowrap;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+}
+
+/* Fundo escurecido atrás do modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Container do modal */
+.modal-edit-food {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px 30px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Título do modal */
+.modal-edit-food h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #333;
+  text-align: center;
+}
+
+/* Formulário */
+.modal-edit-food form label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #444;
+}
+
+.modal-edit-food form input[type="text"],
+.modal-edit-food form input[type="number"],
+.modal-edit-food form textarea,
+.modal-edit-food form input[type="file"] {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1.5px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-top: 5px;
+  transition: border-color 0.2s ease;
+}
+
+.modal-edit-food form input[type="text"]:focus,
+.modal-edit-food form input[type="number"]:focus,
+.modal-edit-food form textarea:focus,
+.modal-edit-food form input[type="file"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Textarea */
+.modal-edit-food form textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Preview da imagem */
+.modal-edit-food img {
+  display: block;
+  margin: 15px auto 10px auto;
+  border-radius: 6px;
+  max-height: 150px;
+  object-fit: cover;
+}
+
+/* Container dos botões */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Botões */
+.modal-buttons button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 48%;
+}
+
+/* Botão salvar */
+.modal-buttons button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-buttons button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+/* Botão cancelar */
+.modal-buttons button[type="button"] {
+  background-color: #dc3545;
+  color: white;
+}
+
+.modal-buttons button[type="button"]:hover {
+  background-color: #c82333;
+}
+

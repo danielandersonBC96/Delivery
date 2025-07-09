@@ -1,26 +1,35 @@
 import React from 'react';
 import './Sidbar.css';
-import { assets } from '../../assets/admin_assets/assets';
 import { useNavigate } from 'react-router-dom';
+import { MdAddBox, MdDashboard, MdCategory, MdListAlt } from 'react-icons/md'; // importando ícones
 
 const Sidebar = () => {
-  const navigate = useNavigate(); // Hook de navegação
+  const navigate = useNavigate();
 
   return (
     <div className="sidebar">
       <div className="sidebar-options">
+
         <div className="sidebar-option" onClick={() => navigate('/admin')}>
-          <img src={assets.add_icon} alt="admin" />
+          <MdAddBox size={24} />
           <p>Adicionar Item</p>
         </div>
-        <div className="sidebar-option" onClick={() => navigate('/admin/list')}>
-          <img src={assets.order_icon} alt="List" />
-          <p>Lista de Item</p>
+
+        <div className="sidebar-option" onClick={() => navigate('/list')}>
+          <MdCategory size={24} />
+          <p>Gerenciar Categorias</p>
         </div>
+
+        <div className="sidebar-option" onClick={() => navigate('/admin/list')}>
+          <MdListAlt size={24} />
+          <p>Lista de Itens</p>
+        </div>
+
         <div className="sidebar-option" onClick={() => navigate('/orders')}>
-          <img src={assets.order_icon} alt="Orders" />
+          <MdDashboard size={24} />
           <p>Dashboard</p>
         </div>
+
       </div>
     </div>
   );

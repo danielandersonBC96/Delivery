@@ -10,6 +10,7 @@ import db from './Config/database.js';
 import foodRoutes from './Router/foodRouter.js';
 import userRoutes from './Router/userRoutes.js';
 import orderRoutes from './Router/createOrdeRoutes.js';
+import categoryRoutes from  './Router/categoryRouter.js'
 
 dotenv.config();
 
@@ -48,8 +49,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', orderRoutes);
-app.use('/foods', foodRoutes);
+app.use('/api/foods', foodRoutes);
 app.use('/users', userRoutes);
+app.use('/category', categoryRoutes);
 
 // Middleware para rotas não encontradas
 app.use((req, res) => {

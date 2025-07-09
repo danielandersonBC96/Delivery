@@ -1,48 +1,108 @@
 .explore-menu {
   text-align: center;
+  padding: 0 20px;
 }
 
+.explore-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  transition: transform 0.2s ease;
+}
+
+.menu-icon:hover {
+  transform: scale(1.2);
+}
+
+h1 {
+  margin-top: 40px;
+  margin-bottom: 10px;
+  font-size: 2.2rem;
+  color: #333;
+}
+
+.explore-menu-text {
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+  color: tomato;
+}
+
+/* Carousel */
 .carousel-container {
   display: flex;
   align-items: center;
   position: relative;
   max-width: 100%;
+  overflow: hidden;
 }
 
 .explore-menu-list {
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   scroll-behavior: smooth;
   width: 100%;
+  padding: 10px 0;
   scrollbar-width: none; /* Firefox */
 }
 
 .explore-menu-list::-webkit-scrollbar {
-  display: none; /* Esconder barra de rolagem para Chrome, Safari e Edge */
+  display: none; /* Chrome/Safari/Edge */
 }
 
 .explore-menu-list-item {
-  min-width: 200px;
-  margin: 10px;
+  min-width: 180px;
+  margin: 0 10px;
   text-align: center;
-  transition: transform 0.3s ease;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s;
+  border-radius: 12px;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.explore-menu-list-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .explore-menu-list-item img {
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
+  border-radius: 10px;
   object-fit: cover;
+  transition: transform 0.3s ease, border 0.3s ease;
 }
 
-.explore-menu-list-item.active img {
-  border: 2px solid #ff0000;
-  transform: scale(1.1);
+.explore-menu-list-item.active img,
+.explore-menu-list-item img.active {
+  border: 3px solid tomato;
+  transform: scale(1.05);
 }
 
+.category-icon {
+  font-size: 50px;
+  color: #aaa;
+  margin-bottom: 5px;
+  transition: color 0.3s;
+}
+
+.category-icon.active {
+  color: tomato;
+}
+
+/* Arrows */
 .arrow {
-  background-color: white;
+  background-color: #fff;
   border: none;
-  color: black;
+  color: #333;
   font-size: 2rem;
   cursor: pointer;
   position: absolute;
@@ -55,7 +115,8 @@
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease;
 }
 
 .arrow.left {
@@ -66,76 +127,66 @@
   right: 10px;
 }
 
-.arrow:focus {
-  outline: none;
-}
-
 .arrow:hover {
   background-color: #f0f0f0;
 }
 
-h1 {
-  margin-top: 50px;
-  margin-bottom: 30px;
-}
-
-.explore-menu-text {
-  margin-top: 30px;
-  margin-bottom: 50px;
-  color: tomato;
-}
-
-/* Estilos responsivos para dispositivos móveis */
+/* Responsivo para tablets */
 @media (max-width: 768px) {
   .explore-menu-list-item {
-      min-width: 150px; /* Reduz o tamanho dos itens para telas menores */
+    min-width: 140px;
   }
 
   .explore-menu-list-item img {
-      width: 120px; /* Ajusta o tamanho das imagens */
-      height: 120px;
+    width: 110px;
+    height: 110px;
   }
 
-  .arrow {
-      font-size: 1.5rem; /* Diminui o tamanho das setas */
-      width: 30px;
-      height: 30px;
+  .category-icon {
+    font-size: 36px;
   }
 
   h1 {
-      font-size: 1.5rem; /* Ajusta o tamanho do título */
-      margin-top: 30px;
-      margin-bottom: 20px;
+    font-size: 1.8rem;
   }
 
   .explore-menu-text {
-      font-size: 1rem; /* Ajusta o tamanho do texto */
-      margin-top: 20px;
-      margin-bottom: 30px;
+    font-size: 1rem;
+  }
+
+  .arrow {
+    font-size: 1.5rem;
+    width: 32px;
+    height: 32px;
   }
 }
 
+/* Responsivo para celulares */
 @media (max-width: 480px) {
   .explore-menu-list-item {
-      min-width: 120px; /* Reduz ainda mais para telas muito pequenas */
+    min-width: 120px;
   }
 
   .explore-menu-list-item img {
-      width: 100px;
-      height: 100px;
+    width: 90px;
+    height: 90px;
   }
 
-  .arrow {
-      font-size: 1.2rem; /* Diminui ainda mais as setas */
-      width: 25px;
-      height: 25px;
+  .category-icon {
+    font-size: 30px;
   }
 
   h1 {
-      font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 
   .explore-menu-text {
-      font-size: 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .arrow {
+    font-size: 1.2rem;
+    width: 28px;
+    height: 28px;
   }
 }

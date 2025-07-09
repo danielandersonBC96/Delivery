@@ -1,0 +1,315 @@
+/* CategoryManager.css */
+
+
+.remove-image-btn{
+  position: relative;
+  margin-left: 0px;
+}
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.admin-content {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+.category-manager {
+  flex: 1;
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  overflow-y: auto;
+}
+
+.category-manager h2,
+.category-manager h3 {
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.error {
+  color: #d32f2f;
+  background-color: #fce4e4;
+  border: 1px solid #d32f2f;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.success {
+  color: #388e3c;
+  background-color: #e6f4ea;
+  border: 1px solid #388e3c;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.category-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.category-form input[type="text"],
+.category-form select {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease;
+}
+
+.category-form input[type="text"]:focus,
+.category-form select:focus {
+  border-color: tomato;
+  outline: none;
+  border-radius: 30px;
+}
+
+.upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color:whitesmoke;
+  color: black;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  width: fit-content;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.upload-label:hover:not([disabled]) {
+  background-color: rgba(245, 245, 245, 0.61);
+}
+
+.upload-label[style*="not-allowed"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.upload-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.category-form button {
+  background-color:tomato;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.category-form button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 30px;
+}
+
+ul li {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.category-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.delete-btn {
+  margin-left: auto;
+  background-color: #d32f2f;
+  border: none;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background-color: #9a2424;
+}
+
+.delete-btn:disabled {
+  background-color: #f8a9a9;
+  cursor: not-allowed;
+}
+
+/* Scrollbar para o container (opcional) */
+.category-manager::-webkit-scrollbar {
+  width: 8px;
+}
+
+.category-manager::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 4px;
+}
+
+.category-manager::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}
+
+/* Área de preview da imagem */
+.image-preview {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 35px 0;
+  padding: -10px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  justify-content: start;
+  flex-wrap: wrap;
+}
+
+.preview-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+}
+
+.remove-image-btn {
+  background-color: tomato;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+  height: fit-content;
+}
+
+.remove-image-btn:hover {
+  background-color: #e04c2b;
+}
+
+/* Formulários */
+.category-form {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  max-width: 400px;
+}
+
+.category-form input[type="text"],
+.category-form select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.category-form button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  background-color:tomato;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.category-form button:hover {
+  background-color: orangered;
+}
+
+/* Upload de imagem */
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px dashed #aaa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 10px 0;
+  background-color: #f9f9f9;
+  color: #555;
+}
+
+/* Mensagens */
+.error {
+  color: red;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.success {
+  color: green;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* Lista de categorias */
+.category-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.delete-btn {
+  margin-left: auto;
+  background-color: crimson;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: darkred;
+}

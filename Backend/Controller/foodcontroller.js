@@ -1,14 +1,6 @@
 
-// Função para adicionar um novo alimento
-
 // No controlador onde você adiciona o alimento
 import db from '../Config/database.js';
-
-
-
-
-
-
 export const createFood = async (req, res) => {
     const { name, description, price, category } = req.body;
     const image = req.file ? `uploads/${req.file.filename}` : null; // Caminho relativo para a imagem
@@ -148,28 +140,33 @@ export const deleteFood = (req, res) => {
 };
 
 
-// Função para obter um alimento pelo ID
+// ✅ Atualizado para funcionar corretamente com SQLite e fornecer imagem com URL completa
 export const getFoodById = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const sql = `SELECT * FROM foods WHERE id = ?`;
+  const sql = `SELECT * FROM foods WHERE id = ?`;
 
-    try {
-        const dbInstance = await db; // Aguarda a conexão com o banco de dados
-        dbInstance.get(sql, [id], (err, row) => {
-            if (err) {
-                console.error('Erro ao buscar no banco de dados:', err);
-                return res.status(500).json({ message: 'Erro ao buscar o produto' });
-            }
+  try {
+    const dbInstance = await db;
+    dbInstance.get(sql, [id], (err, row) => {
+      if (err) {
+        console.error('Erro ao buscar no banco de dados:', err);
+        return res.status(500).json({ message: 'Erro ao buscar o produto' });
+      }
 
-            if (!row) {
-                return res.status(404).json({ message: 'Produto não encontrado' });
-            }
+      if (!row) {
+        return res.status(404).json({ message: 'Produto não encontrado' });
+      }
 
-            res.status(200).json(row);
-        });
-    } catch (err) {
-        console.error('Erro ao buscar produto:', err);
-        res.status(500).json({ message: 'Erro ao buscar produto' });
-    }
+      // ✅ Corrige o caminho da imagem para a URL completa
+      row.image = row.image
+        ? `http://localhost:4000/uploads/${row.image.replace('uploads/', '')}`
+        : 'http://localhost:4000/uploads/default-image.png';
+
+      res.status(200).json(row);
+    });
+  } catch (err) {
+    console.error('Erro ao buscar produto:', err);
+    res.status(500).json({ message: 'Erro ao buscar produto' });
+  }
 };

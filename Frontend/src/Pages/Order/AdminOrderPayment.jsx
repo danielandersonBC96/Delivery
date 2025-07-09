@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
-import { useNavigate } from 'react-router-dom'; // ✅ Importado
+import { useNavigate } from 'react-router-dom';
+import { FaUserTie, FaSignOutAlt, FaClipboardList, FaChartLine, FaCalendarAlt, FaCalendarDay, FaArrowLeft, FaArrowRight } from 'react-icons/fa'; // ✅ Ícones adicionados
 import './AdminOrderPayment.css';
 
 const socket = io('http://localhost:4000', { transports: ['websocket'] });
@@ -18,7 +19,7 @@ const AdminOrderPayment = () => {
   const [monthFilter, setMonthFilter] = useState('');
   const [dayFilter, setDayFilter] = useState('');
 
-  const navigate = useNavigate(); // ✅ Criado
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username') || 'Admin';
@@ -85,24 +86,20 @@ const AdminOrderPayment = () => {
   return (
     <div className="admin-layout">
       <aside className="sidebar">
-        <h2>Admin</h2>
+        <h2><FaUserTie /> Admin</h2>
         <ul>
-          <li onClick={() => navigate('/sendrequest')} style={{ cursor: 'pointer' }}>
-            📋 Enviar Pedidos
-          </li>
-          <li>⚙️ Sair</li>
+          <li onClick={() => navigate('/Admin')}><FaClipboardList /> Home Admin</li>
+          <li onClick={() => navigate('/sendrequest')}><FaClipboardList /> Enviar Pedidos</li>
+          <li onClick={() => navigate('/')}><FaSignOutAlt /> Sair</li>
         </ul>
       </aside>
-
       <div className="main-content">
         <nav className="navbar-admin">
           <h1>Painel Administrativo</h1>
           <span>Bem-vindo, {username}!</span>
         </nav>
-
         <main className="content">
           <h2>Pedidos Recebidos</h2>
-
           <div className="filter-container">
             <label htmlFor="monthFilter">Filtrar por mês:</label>
             <input
@@ -146,17 +143,17 @@ const AdminOrderPayment = () => {
 
           <div className="faturamento-wrapper">
             <div className="faturamento-box">
-              <h3>📈 Faturamento Total</h3>
+              <h3><FaChartLine /> Faturamento Total</h3>
               <p>R$ {faturamentoTotal.toFixed(2)}</p>
             </div>
 
             <div className="faturamento-box">
-              <h3>📅 Faturamento do Mês</h3>
+              <h3><FaCalendarAlt /> Faturamento do Mês</h3>
               <p>R$ {faturamentoTotal.toFixed(2)}</p>
             </div>
 
             <div className="faturamento-box">
-              <h3>🗓️ Faturamento do Dia</h3>
+              <h3><FaCalendarDay /> Faturamento do Dia</h3>
               <p>R$ {faturamentoDia.toFixed(2)}</p>
             </div>
           </div>
@@ -198,7 +195,7 @@ const AdminOrderPayment = () => {
 
               <div className="pagination">
                 <button onClick={() => setCurrentPage((prev) => prev - 1)} disabled={currentPage === 1}>
-                  ◀ Anterior
+                  <FaArrowLeft /> Anterior
                 </button>
                 <span>
                   Página {currentPage} de {totalPages}
@@ -207,7 +204,7 @@ const AdminOrderPayment = () => {
                   onClick={() => setCurrentPage((prev) => prev + 1)}
                   disabled={currentPage >= totalPages}
                 >
-                  Próxima ▶
+                  Próxima <FaArrowRight />
                 </button>
               </div>
             </>

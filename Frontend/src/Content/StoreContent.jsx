@@ -1,7 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { food_list } from "../assets/frontend_assets/assets";
 
-// Preços dos acompanhamentos (definidos no código)
 const acompanhamento_principal = [
   { name: "Vinagrete", preco: 2.5 },
   { name: "Vatapá", preco: 3 },
@@ -31,10 +29,37 @@ const acompanhamento_batata = [
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
-  // Inicializa o estado do carrinho como array
   const [cartItems, setCartItems] = useState([]);
+  const [foodList, setFoodList] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  // Função para adicionar ao carrinho
+  // Buscar alimentos do backend
+  const fetchFoodList = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/api/foods");
+      const data = await res.json();
+      setFoodList(data.data);
+    } catch (err) {
+      console.error("Erro ao buscar alimentos:", err.message);
+    }
+  };
+
+  // Buscar categorias do backend (rota corrigida)
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/category/get-category");
+      const data = await res.json();
+      setCategories(data.categories || []);
+    } catch (err) {
+      console.error("Erro ao buscar categorias:", err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchFoodList();
+    fetchCategories();
+  }, []);
+
   const addToCart = (cartItem) => {
     if (!cartItem || !cartItem.id || !cartItem.price) {
       console.warn("Item inválido:", cartItem);
@@ -62,28 +87,25 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  // Função para remover do carrinho (corrigida)
   const removeFromCart = (productId) => {
     if (!productId) {
-      console.warn("ItemId inválido:", itemId);
+      console.warn("productId inválido:", productId);
       return;
     }
 
     setCartItems((prev) => {
-      // Filtra o array removendo o item com product._id igual a itemId
       const updatedCartItems = prev.filter(
         (item) => String(item.product._id) !== String(productId)
       );
 
       if (updatedCartItems.length === prev.length) {
-        console.warn(`Item com ID ${itemId} não encontrado no carrinho.`);
+        console.warn(`Item com ID ${productId} não encontrado no carrinho.`);
       }
 
       return updatedCartItems;
     });
   };
 
-  // Função para calcular o preço de acompanhamento
   const getAcompanhamentoPrice = (acomp) => {
     if (!acomp || !acomp.name) {
       console.warn("Acompanhamento inválido:", acomp);
@@ -103,7 +125,6 @@ const StoreContextProvider = (props) => {
     return selectedAcompanhamento ? selectedAcompanhamento.preco : 0;
   };
 
-  // Função para calcular o total do carrinho
   const getTotalCartAmount = () => {
     let totalAmount = 0;
     let acompanhamentoTotal = 0;
@@ -119,19 +140,22 @@ const StoreContextProvider = (props) => {
     return totalAmount + acompanhamentoTotal;
   };
 
-  // UseEffect para debug do estado do carrinho
   useEffect(() => {
     console.log("Estado atual do carrinho:", JSON.stringify(cartItems, null, 2));
   }, [cartItems]);
 
-  // Contexto com todas as funções e valores
   const contextValue = {
-    food_list,
+    food_list: foodList,
+    setFoodList,
+    fetchFoodList,
     cartItems,
     setCartItems,
     addToCart,
     removeFromCart,
     getTotalCartAmount,
+    categories,
+    setCategories,
+    fetchCategories,
   };
 
   return (

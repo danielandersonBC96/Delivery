@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Add.css';
 import { assets } from '../../assets/admin_assets/assets';
 
-// Custom Alert Component
 const CustomAlert = ({ message, onClose }) => {
   return (
     <div className="custom-alert">
@@ -23,7 +22,24 @@ const Add = () => {
     price: 0,
   });
 
+  const [categories, setCategories] = useState([]); // <-- Estado para categorias
+
   const [alertMessage, setAlertMessage] = useState('');
+
+  // Buscar categorias do backend ao montar o componente
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/category/get-category');
+        const data = await response.json();
+        setCategories(data.categories || []);
+      } catch (error) {
+        console.error('Erro ao buscar categorias:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -53,7 +69,7 @@ const Add = () => {
     }
 
     try {
-        const response = await fetch('http://localhost:4000/foods', {
+        const response = await fetch('http://localhost:4000/api/foods', {
             method: 'POST',
             body: submitData,
         });
@@ -155,14 +171,11 @@ const Add = () => {
             onChange={handleChange}
           >
             <option value="">Select Category</option>
-            <option value="Salad">Salad</option>
-            <option value="Rolls">Rolls</option>
-            <option value="Deserts">Deserts</option>
-            <option value="Sandwich">Sandwich</option>
-            <option value="Cake">Cake</option>
-            <option value="Pure Veg">Pure Veg</option>
-            <option value="Pasta">Pasta</option>
-            <option value="Noodles">Noodles</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.title}>
+                {cat.title}
+              </option>
+            ))}
           </select>
         </div>
 

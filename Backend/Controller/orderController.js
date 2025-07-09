@@ -33,8 +33,8 @@ export const createOrder = (req, res) => {
   const totalAmount = total - discount;
 
   const orderQuery = `
-    INSERT INTO orders (user_id, total, payment_method, customer_name, phone_number, discount)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO orders (user_id, total, payment_method, customer_name, phone_number, discount, status)
+    VALUES (?, ?, ?, ?, ?, ?, 'Pendente')
   `;
 
   db.run(orderQuery, [user_id, totalAmount, paymentMethod, customerName, phoneNumber, discount], function (err) {
@@ -87,6 +87,7 @@ export const createOrder = (req, res) => {
             customer_name: customerName,
             phone_number: phoneNumber,
             discount,
+            status: 'Pendente',
             created_at: new Date().toISOString(),
             items: items || []
           };
@@ -113,6 +114,7 @@ export const getAllOrdersWithItems = (req, res) => {
       o.customer_name,
       o.phone_number,
       o.discount,
+      o.status,
       o.created_at,
       oi.id AS order_item_id,
       oi.food_id,
@@ -145,6 +147,7 @@ export const getAllOrdersWithItems = (req, res) => {
           customer_name: row.customer_name,
           phone_number: row.phone_number,
           discount: row.discount,
+          status: row.status,
           created_at: row.created_at,
           items: []
         });
@@ -197,5 +200,29 @@ export const getOrderItems = (req, res) => {
       return res.status(500).json({ message: 'Erro ao obter itens do pedido', error: err.message });
     }
     res.status(200).json({ orderItems: rows });
+  });
+};
+
+// ✅ Atualizar status do pedido (ex: "Enviado")
+export const updateOrderStatus = (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: 'Status é obrigatório' });
+  }
+
+  const query = `UPDATE orders SET status = ? WHERE id = ?`;
+
+  db.run(query, [status, id], function (err) {
+    if (err) {
+      return res.status(500).json({ message: 'Erro ao atualizar status do pedido', error: err.message });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Pedido não encontrado' });
+    }
+
+    res.status(200).json({ message: 'Status do pedido atualizado com sucesso' });
   });
 };

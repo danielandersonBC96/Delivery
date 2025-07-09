@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaShoppingCart, FaStore, FaSignOutAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './ProfileUser.css';
 
 export const ProfileUser = () => {
+  const navigate = useNavigate();
+
   const [orders, setOrders] = useState([]);
   const [username, setUsername] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -65,8 +69,8 @@ export const ProfileUser = () => {
   const formatPurchaseDate = (purchaseDate) => {
     const today = new Date();
     const purchaseDateTime = new Date(purchaseDate);
-    const diffTime = Math.abs(today - purchaseDateTime);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = today.setHours(0, 0, 0, 0) - purchaseDateTime.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays === 0) return 'Hoje';
     if (diffDays === 1) return 'Ontem';
@@ -134,43 +138,56 @@ export const ProfileUser = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+  // Função para logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+    navigate('/login'); // ajusta a rota de login no seu app
+  };
+
   return (
-    <div className="profile-page">
-      <nav className="navbar1">
-        <div className="navbar-logo">Meu Perfil</div>
-        <div className="navbar-user">Bem-vindo, {username}!</div>
+    <div className="profile-page-senior">
+      <nav className="navbar-senior">
+        <div className="navbar-logo-senior">Meu Perfil</div>
+        <div className="navbar-user-senior">Olá, <strong>{username}</strong></div>
       </nav>
 
       {successMessage && (
-        <div className={`alert-card ${successMessage.startsWith('✅') ? 'success' : 'error'}`}>
+        <div className={`alert-card-senior ${successMessage.startsWith('✅') ? 'success' : 'error'}`}>
           {successMessage}
         </div>
       )}
 
-      <div className="main-wrapper">
-        <aside className="sidebar">
-          <ul>
-            <li><button className="sidebar-btn">Meus Pedidos</button></li>
-            <li><button className="sidebar-btn">Mercado</button></li>
-            <li><button className="sidebar-btn">Sair</button></li>
-          </ul>
+      <div className="main-wrapper-senior">
+        <aside className="sidebar-senior" aria-label="Menu de navegação">
+       
+          <button
+            className="sidebar-btn-senior"
+            aria-label="Continuar Comprando"
+            onClick={() => navigate('/')}
+          >
+            <FaStore />
+            <span>Mercado</span>
+          </button>
+        
         </aside>
 
-        <main className="profile-content">
+        <main className="profile-content-senior">
           <h2>Minhas Compras</h2>
 
           {loading ? (
             <p>Carregando seus pedidos...</p>
           ) : (
-            <div className="purchase-container">
+            <div className="purchase-container-senior">
               {orders.length === 0 && <p>Você ainda não fez nenhum pedido.</p>}
 
               {currentOrders.map((order, index) => (
-                <div key={order.id || index} className="purchase">
-                  <div className="purchase-items">
+                <div key={order.id || index} className="purchase-senior">
+                  <div className="purchase-items-senior">
                     <h3>Itens da Compra</h3>
-                    <div className="table-responsive">
-                      <table className="purchase-table">
+                    <div className="table-responsive-senior">
+                      <table className="purchase-table-senior">
                         <thead>
                           <tr>
                             <th>Nome</th>
@@ -189,7 +206,7 @@ export const ProfileUser = () => {
                               <td>{item.quantity}</td>
                               <td>
                                 {item.image ? (
-                                  <img src={item.image} alt={item.name} className="product-image" />
+                                  <img src={item.image} alt={item.name} className="product-image-senior" />
                                 ) : (
                                   'Sem imagem'
                                 )}
@@ -201,25 +218,25 @@ export const ProfileUser = () => {
                     </div>
                   </div>
 
-                  <div className="purchase-details">
+                  <div className="purchase-details-senior">
                     <h3>Detalhes da Compra</h3>
                     <p><strong>Data:</strong> {order.purchaseDate}</p>
                     <p><strong>Status:</strong> {order.status}</p>
-                    <p className="total">Total: R$ {order.total ? order.total.toFixed(2) : ''}</p>
+                    <p className="total-senior">Total: R$ {order.total ? order.total.toFixed(2) : ''}</p>
 
                     {order.status !== 'Pedido Novamente' ? (
-                      <button onClick={() => handleOrderAgain(index)} className="btn-order-again">
+                      <button onClick={() => handleOrderAgain(index)} className="btn-order-again-senior">
                         Pedir Novamente
                       </button>
                     ) : (
-                      <p className="order-again-status">Status: Pedido Novamente</p>
+                      <p className="order-again-status-senior">Status: Pedido Novamente</p>
                     )}
                   </div>
                 </div>
               ))}
 
               {orders.length > 3 && (
-                <div className="pagination">
+                <div className="pagination-senior">
                   <button onClick={handlePrevPage} disabled={currentPage === 1}>
                     Anterior
                   </button>

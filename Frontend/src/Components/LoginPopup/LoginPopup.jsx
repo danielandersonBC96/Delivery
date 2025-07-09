@@ -9,7 +9,8 @@ const LoginPopup = ({ setShowLogin }) => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        isAdmin: false, // Novo campo para definir se é admin
     });
     const [errorMessage, setErrorMessage] = useState("");
     const [emailError, setEmailError] = useState("");
@@ -26,11 +27,19 @@ const LoginPopup = ({ setShowLogin }) => {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then(() => navigate('/profile'))
+            .then(() => {
+                const role = localStorage.getItem('userRole');
+                if (role === 'admin') {
+                    navigate('/admin');
+                } else {
+                    navigate('/profile');
+                }
+            })
             .catch(() => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userName');
                 localStorage.removeItem('userId');
+                localStorage.removeItem('userRole');
                 alert("Sua sessão expirou. Por favor, faça login novamente.");
             })
             .finally(() => {
@@ -49,7 +58,7 @@ const LoginPopup = ({ setShowLogin }) => {
     }, [navigate]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
 
         if (name === "email") {
             setFormData({ ...formData, email: value });
@@ -58,6 +67,8 @@ const LoginPopup = ({ setShowLogin }) => {
             } else {
                 setEmailError("");
             }
+        } else if (type === "checkbox") {
+            setFormData(prev => ({ ...prev, [name]: checked }));
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -94,7 +105,8 @@ const LoginPopup = ({ setShowLogin }) => {
                 const response = await axios.post('http://localhost:4000/users/register', {
                     name: formData.name,
                     email: formData.email,
-                    password: formData.password
+                    password: formData.password,
+                    role: formData.isAdmin ? 'admin' : 'user', // Envia o role conforme checkbox
                 });
                 alert(response.data.message);
                 setCurrState("Login");
@@ -110,6 +122,7 @@ const LoginPopup = ({ setShowLogin }) => {
                     localStorage.setItem('token', token);
                     localStorage.setItem('userName', user.name);
                     localStorage.setItem('userId', user.id);
+                    localStorage.setItem('userRole', user.role);  // Armazena o role do usuário
 
                     if (rememberMe) {
                         localStorage.setItem('storedEmail', formData.email);
@@ -120,8 +133,14 @@ const LoginPopup = ({ setShowLogin }) => {
                     }
 
                     alert(`Login bem-sucedido! Bem-vindo, ${user.name}!`);
+
                     setShowLogin(false);
-                    navigate('/profile');
+
+                    if (user.role === 'admin') {
+                        navigate('/admin');
+                    } else {
+                        navigate('/profile');
+                    }
                 } else {
                     setErrorMessage("Falha no login. Verifique suas credenciais.");
                 }
@@ -154,15 +173,26 @@ const LoginPopup = ({ setShowLogin }) => {
 
                 <div className="login-popup-inputs">
                     {currState === "Sign Up" && (
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Seu Nome"
-                            value={formData.name}
-                            onChange={handleChange}
-                            aria-label="Name"
-                            required
-                        />
+                        <>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Seu Nome"
+                                value={formData.name}
+                                onChange={handleChange}
+                                aria-label="Name"
+                                required
+                            />
+                            <label className="admin-checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name="isAdmin"
+                                    checked={formData.isAdmin}
+                                    onChange={handleChange}
+                                />
+                                Registrar como empresa
+                            </label>
+                        </>
                     )}
                     <input
                         type="email"

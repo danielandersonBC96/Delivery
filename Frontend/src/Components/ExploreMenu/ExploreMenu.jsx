@@ -1,11 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import './ExploreMenu.css';
-import { menu_list } from '../../assets/frontend_assets/assets';
+import { StoreContext } from '../../Content/StoreContent';
+import { FiMenu, FiHome } from 'react-icons/fi';
 
 const ExploreMenu = ({ category, setCategory }) => {
   const carouselRef = useRef(null);
+  const { categories, fetchCategories } = useContext(StoreContext);
 
-  // Load the selected category from localStorage on component mount
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
   useEffect(() => {
     const savedCategory = localStorage.getItem('selectedCategory');
     if (savedCategory) {
@@ -13,53 +18,69 @@ const ExploreMenu = ({ category, setCategory }) => {
     }
   }, [setCategory]);
 
-  // Reset to "All" category when "Home" is accessed
-  const handleCategoryClick = (item) => {
-    const newCategory = item.menu_name === "Home" ? "All" : item.menu_name;
+  const handleCategoryClick = (catTitle) => {
+    const newCategory = catTitle === 'Home' ? 'All' : catTitle;
     setCategory(newCategory);
     localStorage.setItem('selectedCategory', newCategory);
   };
 
-  // Scroll to the left
   const scrollLeft = () => {
-    carouselRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    if (carouselRef.current)
+      carouselRef.current.scrollBy({ left: -200, behavior: 'smooth' });
   };
 
-  // Scroll to the right
   const scrollRight = () => {
-    carouselRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    if (carouselRef.current)
+      carouselRef.current.scrollBy({ left: 200, behavior: 'smooth' });
   };
 
   return (
     <div className="explore-menu" id="explore-menu">
-      <h1>Explore Menu</h1>
-      <p className="explore-menu-text">Explore all kinds of foods</p>
+      <div className="explore-menu-header">
+        <h1>Explore Menu</h1>
+        <FiMenu className="menu-icon" />
+      </div>
+      <p className="explore-menu-text">Explore todos os tipos de comidas</p>
 
       <div className="carousel-container">
-        {/* Left Arrow */}
         <button className="arrow left" onClick={scrollLeft}>
           &lt;
         </button>
 
-        {/* Carousel Items */}
         <div className="explore-menu-list" ref={carouselRef}>
-          {menu_list.map((item, index) => (
+          {/* Categoria "Home" com ícone */}
+          <div
+            onClick={() => handleCategoryClick('Home')}
+            className="explore-menu-list-item"
+          >
+            <FiHome className={`category-icon ${category === 'All' ? 'active' : ''}`} />
+            <p>Home</p>
+          </div>
+
+          {/* Demais categorias com imagem */}
+          {categories.map((cat) => (
             <div
-              onClick={() => handleCategoryClick(item)}
-              key={index}
+              key={cat.id}
+              onClick={() => handleCategoryClick(cat.title)}
               className="explore-menu-list-item"
             >
               <img
-                className={category === item.menu_name || (item.menu_name === "Home" && category === "All") ? 'active' : ''}
-                src={item.menu_image}
-                alt={item.menu_name}
+                className={category === cat.title ? 'active' : ''}
+                src={
+                  cat.image
+                    ? `http://localhost:4000/uploads/${cat.image}`
+                    : '/assets/default.png'
+                }
+                alt={cat.title}
+                onError={(e) => {
+                  e.target.src = '/assets/default.png';
+                }}
               />
-              <p>{item.menu_name}</p>
+              <p>{cat.title}</p>
             </div>
           ))}
         </div>
 
-        {/* Right Arrow */}
         <button className="arrow right" onClick={scrollRight}>
           &gt;
         </button>

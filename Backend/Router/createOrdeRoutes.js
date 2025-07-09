@@ -4,11 +4,14 @@ import {
   createOrderItem,
   getOrderItems,
   getUserOrders,
-  getAllOrdersWithItems
+  getAllOrdersWithItems,
+  updateOrderStatus
 } from '../Controller/orderController.js';
 import {authenticateToken } from '../Middleware/authtenticationToken.js';
 
 const router = express.Router();
+
+router.put('/orders/:id/status', authenticateToken, updateOrderStatus);
 
 // Criar pedido (rota protegida)
 router.post('/orders', authenticateToken, createOrder);

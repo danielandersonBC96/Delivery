@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './SendRequest.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // ✅ Importado
+import { useNavigate } from 'react-router-dom';
+import { FaUserTie, FaSignOutAlt, FaClipboardList } from 'react-icons/fa';
 
 export const SendRequest = () => {
   const [orders, setOrders] = useState([]);
@@ -13,7 +14,7 @@ export const SendRequest = () => {
   const [monthInput, setMonthInput] = useState('');
   const [dayInput, setDayInput] = useState('');
 
-  const navigate = useNavigate(); // ✅ Instanciado
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username') || 'Administrador';
@@ -78,9 +79,34 @@ export const SendRequest = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  const handleSendOrder = (order) => {
-    alert(`Pedido ${order.id || order._id} enviado!`);
-    // Aqui você pode implementar a lógica real de envio
+  const handleSendOrder = async (order) => {
+    if (order.status !== 'Pendente') {
+      alert('Este pedido já foi enviado ou não pode ser reenviado.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+
+      await axios.put(
+        `http://localhost:4000/api/orders/${order._id || order.id}/status`,
+        { status: 'Enviado' },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setOrders(prevOrders =>
+        prevOrders.map(o =>
+          (o._id || o.id) === (order._id || order.id)
+            ? { ...o, status: 'Enviado' }
+            : o
+        )
+      );
+
+      alert(`Pedido ${order._id || order.id} enviado com sucesso!`);
+    } catch (error) {
+      console.error('Erro ao enviar pedido:', error);
+      alert('Erro ao enviar o pedido. Tente novamente.');
+    }
   };
 
   return (
@@ -92,12 +118,11 @@ export const SendRequest = () => {
 
       <div className="main-wrapper">
         <aside className="sidebar">
-          <h2>Admin</h2>
+          <h2><FaUserTie /> Admin</h2>
           <ul>
-            <li onClick={() => navigate('/orders')} style={{ cursor: 'pointer' }}>
-              📋 Pedidos Recebidos
-            </li>
-            <li>⚙️ Sair</li>
+            <li onClick={() => navigate('/Admin')}><FaClipboardList /> Home Admin</li>
+            <li onClick={() => navigate('/orders')}><FaClipboardList /> Pedidos Recebidos</li>
+            <li onClick={() => navigate('/')}><FaSignOutAlt /> Sair</li>
           </ul>
         </aside>
 
@@ -143,7 +168,11 @@ export const SendRequest = () => {
                         </details>
                       </td>
                       <td>
-                        <button className="btn-send-order" onClick={() => handleSendOrder(order)}>
+                        <button
+                          className="btn-send-order"
+                          onClick={() => handleSendOrder(order)}
+                          disabled={order.status !== 'Pendente'}
+                        >
                           Enviar Pedido
                         </button>
                       </td>
