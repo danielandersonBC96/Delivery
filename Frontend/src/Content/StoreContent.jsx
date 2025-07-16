@@ -33,7 +33,13 @@ const StoreContextProvider = (props) => {
   const [foodList, setFoodList] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // Buscar alimentos do backend
+  // ✅ Estado de autenticação do usuário
+  const [user, setUser] = useState(null);
+
+  // ✅ Simulação de login (pode ser substituído por autenticação real)
+  const login = (userData) => setUser(userData);
+  const logout = () => setUser(null);
+
   const fetchFoodList = async () => {
     try {
       const res = await fetch("http://localhost:4000/api/foods");
@@ -44,7 +50,6 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  // Buscar categorias do backend (rota corrigida)
   const fetchCategories = async () => {
     try {
       const res = await fetch("http://localhost:4000/category/get-category");
@@ -156,6 +161,12 @@ const StoreContextProvider = (props) => {
     categories,
     setCategories,
     fetchCategories,
+
+    // ✅ Novos valores do usuário
+    user,
+    setUser,
+    login,
+    logout,
   };
 
   return (

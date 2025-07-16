@@ -5,12 +5,12 @@ import cors from 'cors';
 import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
-
-import db from './Config/database.js';
 import foodRoutes from './Router/foodRouter.js';
 import userRoutes from './Router/userRoutes.js';
 import orderRoutes from './Router/createOrdeRoutes.js';
 import categoryRoutes from './Router/categoryRouter.js';
+import tableRoutes from './Router/tableRouter.js';
+import bookingRoutes from './Router/bookingRouter.js';
 
 dotenv.config();
 
@@ -25,16 +25,23 @@ const server = http.createServer(app);
 
 // Lista de origens permitidas (local + produção)
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://delivery-br1d.vercel.app',
+  'http://localhost:5173',           // Frontend local para desenvolvimento
+  'https://delivery-br1d.vercel.app' // Frontend produção
 ];
 
-// Configuração do Socket.IO com CORS liberado
+// Configuração do Socket.IO com CORS liberado para as origens permitidas
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
-    methods: ['GET', 'POST'],
-    credentials: true
+    origin: function(origin, callback) {
+      if (!origin) return callback(null, true); // permitir chamadas sem origem (ex: Postman)
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = `A política de CORS bloqueou a origem ${origin}.`;
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
   }
 });
 
@@ -44,8 +51,15 @@ app.set('io', io);
 // Middlewares
 app.use(express.json());
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `A política de CORS bloqueou a origem ${origin}.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
 }));
 
 // Servir imagens e arquivos de upload
@@ -60,6 +74,8 @@ app.use('/api', orderRoutes);
 app.use('/api/foods', foodRoutes);
 app.use('/users', userRoutes);
 app.use('/category', categoryRoutes);
+app.use('/tables', tableRoutes);
+app.use('/booking', bookingRoutes);
 
 // Middleware de rota não encontrada
 app.use((req, res) => {

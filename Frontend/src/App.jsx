@@ -14,6 +14,7 @@ import ProfileUser from './Pages/ProFileUsers/ProfileUser';
 import AdminOrderPayment from './Pages/Order/AdminOrderPayment';
 import { SendRequest } from './Pages/SendRequest/SendRequest';
 import CategoryManager from './Pages/CategoryManager/CategoryManager';
+import { ReserverTable } from './Pages/ReveserTable/ReserverTable';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false); // Inicia sem mostrar a tela de login
@@ -35,6 +36,7 @@ const App = () => {
             <Route path='/cart' element={<Cart />} />
             <Route path='/list' element ={<CategoryManager/>}/>
             <Route path='/sendrequest' element={<SendRequest/>}/>
+            <Route path = '/reserve' element={<ReserverTable/>}/>
           </Routes>
           <Footer />
         </>

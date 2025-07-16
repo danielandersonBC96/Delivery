@@ -1,233 +1,254 @@
-/* Estilos básicos da Navbar */
+/* NAVBAR BASE */
 .navbar {
-    display: flex;
-    align-items: center; 
-    justify-content: space-between;
-    padding: 10px 20px;
-    background-color:  white;
-    position: relative;
-    margin-bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background-color: tomato;
+  position: relative;
+  margin-bottom: 50px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  z-index: 20;
+  border-radius: 30px
+}
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  }
-  .menu-close {
-    display: none; /* Inicialmente, esconder o ícone de fechar */
-  }
-  .logo {
-    cursor: pointer;
-    width: 90px;
-    height: 90px;
-  }
-  .carrinho{
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    
-    margin-right: 30px;
-  }
-  
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f8f8f8;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
 
-  .navbar-button{
-    margin-top: -5px;
-    top: 5px;
-    border-radius: 15px;
-    width: 20;
-  }
-  
-  .navbar-button:hover{
-    margin-top: -5px;
-    top: 5px;
-    background-color: #fff;
-    color: tomato;
-    border: 1px solid tomato ;
-    border-radius: 15px;
-  }
-  
-  /* Menu de navegação */
+.user-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+.navbar-user {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  background-color: #f1f1f1;
+  padding: 6px 12px;
+  border-radius: 20px;
+  gap: 8px;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.user-status {
+  width: 10px;
+  height: 10px;
+  background-color: limegreen;
+  border-radius: 50%;
+}
+
+.user-status {
+  width: 10px;
+  height: 10px;
+  background-color: limegreen;
+  border-radius: 50%;
+}
+
+
+.logo {
+  cursor: pointer;
+  width: 80px;
+  height: 80px;
+  border-radius: 30px;
+}
+
+.carrinho {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin-right: 20px;
+  transition: transform 0.3s;
+}
+
+.carrinho:hover {
+  transform: scale(1.1);
+}
+
+.menu-icon svg,
+.menu-close svg,
+.navbar-search-icon svg {
+  color: white; 
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.menu-icon svg:hover,
+.menu-close svg:hover,
+.navbar-search-icon svg:hover {
+  color: whitesmoke;
+  transform: scale(1.1);
+}
+
+.navbar-button {
+  padding: 8px 16px;
+  background-color: tomato;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.navbar-button:hover {
+  background-color: white;
+  color: tomato;
+  border: 1px solid tomato;
+}
+
+/* MENU DESKTOP */
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  gap: 20px;
+}
+
+.navbar-menu li {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 500;
+  color: white;
+  transition: color 0.3s;
+}
+
+.navbar-menu li:hover,
+.navbar-menu li.active {
+  color:white;
+}
+
+/* RIGHT SECTION */
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ICON MENU HAMBURGUER */
+.menu-icon {
+  display: none;
+  cursor: pointer;
+}
+
+.menu-icon img {
+  width: 30px;
+  height: 30px;
+}
+
+/* ÍCONE DE FECHAR */
+.menu-close {
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  z-index: 15;
+}
+
+.menu-close img {
+  width: 30px;
+  height: 30px;
+}
+
+/* TABLETS */
+@media (max-width: 1024px) {
   .navbar-menu {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
+    gap: 16px;
   }
-  
-  .navbar-menu li {
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  
-  .navbar-menu li.active {
-    font-weight: bold;
-    color: tomato;
-  }
-  
-  /* Navbar Right (botões de login, carrinho, etc.) */
+
   .navbar-right {
-    display: flex;
-    align-items: center;
+    gap: 12px;
   }
-  
-  /* Ícone do menu (hambúrguer) */
-  .menu-icon {
-    display: none; /* Escondido por padrão */
-    cursor: pointer;
-  }
-  
-  .menu-icon img {
-    width: 30px;
-    height: 30px;
-  }
-  
-  /* Responsividade para dispositivos móveis (Android e iPhone) */
-  @media (max-width: 1024px) { 
-    /* Em tablets ou telas médias */
-    .navbar-menu {
-      display: flex; /* Mantenha o menu flexível em tablets */
-    }
-  
-    .navbar-right {
-      display: flex; /* Mantenha os itens à direita, mas simplificados */
-    }
-  }
-  
-  /* Responsividade para telas pequenas (smartphones) */
-  @media (max-width: 768px) {
-    /* Mostrar o ícone de hambúrguer */
-    .menu-icon {
-      display: block;
-    }
-  
-    /* Ocultar o menu de navegação padrão */
-    .navbar-menu {
-      display: none;
-      width: 100%;
-     
-      background-color: #fff;
-      position: absolute;
-      top: 60px;
-      left: 0;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 10; /* Garantir que o menu apareça sobre outros itens */
-    }
-  
-    /* Mostrar o menu quando o estado isMenuOpen for verdadeiro */
-    .navbar-menu.active {
-      display: block;
-    }
-  
-    /* Alterar o comportamento do botão (remover itens de login/carrinho para não sobrecarregar a tela) */
-    .navbar-right {
-      display: none; /* Esconder botões de login e cesta no celular */
-    }
-  
-    /* Ajustar os itens do menu */
-    .navbar-menu li {
-      padding: 15px 20px;
-      text-align: center;
-      font-size: 18px; /* Aumentar o tamanho da fonte para facilitar a leitura */
-    }
-  }
-  
-  /* Responsividade para telas menores (ex: iPhone 5, outros smartphones compactos) */
-  @media (max-width: 480px) {
-    /* Ajuste ainda mais os itens do menu */
-    .navbar-menu li {
-      padding: 12px 0; /* Menos espaço */
-      font-size: 16px; /* Diminuir o tamanho da fonte */
-    }
-  
-    .navbar-right {
-      display: none; /* Esconder novamente a parte direita */
-    }
-  
-    .navbar-button {
-      font-size: 14px;
-      padding: 8px 15px;
-    }
-  }
-  
+}
 
-
-
-
-
-/* Responsividade para telas pequenas (até 768px) */
+/* SMARTPHONES */
 @media (max-width: 768px) {
-    /* Mostrar o ícone de hambúrguer */
-    .menu-icon {
-      display: block;
-    }
-  
-    /* Ocultar o menu de navegação padrão */
-    .navbar-menu {
-      display: none;
-      width: 100%;
-      height: 100%; /* Ocupa toda a altura da tela */
-      background-color: white; /* Fundo branco */
-      position: fixed; /* Fixa o menu na tela */
-      top: 0;
-      left: 0;
-      padding: 40px 20px; /* Adiciona espaçamento interno */
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Adiciona sombra para destacar o menu */
-      z-index: 10; /* Garante que o menu apareça sobre o conteúdo */
-      overflow-y: auto; /* Permite rolar o menu se necessário */
-    }
-  
-    /* Mostrar o menu quando o estado isMenuOpen for verdadeiro */
-    .navbar-menu.active {
-      display: block;
-    }
-  
-    /* Estilo para o ícone de fechar (no canto superior direito) */
-    .menu-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      cursor: pointer;
-      z-index: 15; /* Garante que o ícone de fechar fique sobre os itens do menu */
-    }
-  
-    .menu-close img {
-      width: 30px;
-      height: 30px;
-    }
-  
-    /* Alterar o comportamento do botão (remover itens de login/carrinho para não sobrecarregar a tela) */
-    .navbar-right {
-      display: none; /* Esconder botões de login e cesta no celular */
-    }
-  
-    /* Ajustar os itens do menu */
-    .navbar-menu li {
-      padding: 15px 20px;
-      text-align: center;
-      font-size: 22px; /* Aumenta o tamanho da fonte para facilitar a leitura */
-      color: black; /* Tornar o texto branco para contraste */
-      cursor: pointer;
-      transition: background-color 0.3s; /* Transição suave ao passar o mouse */
-    }
-  
-    /* Efeito de hover para os itens de menu */
-    .navbar-menu li:hover {
-      background-color: rgba(255, 255, 255, 0.1); /* Efeito de hover para destacar o item */
-    }
+  .menu-icon {
+    display: block;
   }
-  
-  /* Responsividade para telas menores (ex: iPhone 5, outros smartphones compactos) */
-  @media (max-width: 480px) {
-    /* Ajuste ainda mais os itens do menu */
-    .navbar-menu li {
-      padding: 12px 0; /* Menos espaço */
-      font-size: 18px; /* Ajuste do tamanho da fonte */
-    }
-  
-    .navbar-right {
-      display: none; /* Esconder novamente a parte direita */
-    }
-  
-    .navbar-button {
-      font-size: 14px;
-      padding: 8px 15px;
-    }
+
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 80px 30px 30px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    overflow-y: auto;
+    text-align: center;
   }
-  
+
+  .navbar-menu.active {
+    display: flex;
+  }
+
+  .navbar-menu li {
+    font-size: 22px;
+    padding: 18px 0;
+    color: black;
+    transition: background-color 0.2s;
+  }
+
+  .navbar-menu li:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .navbar-right {
+    display: none;
+  }
+
+  .menu-close {
+    display: block;
+  }
+}
+
+/* TELEFONES MENORES */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px 15px;
+  }
+
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .navbar-menu li {
+    font-size: 18px;
+    padding: 14px 0;
+  }
+
+  .navbar-button {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+}

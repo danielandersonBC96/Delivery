@@ -1,0 +1,198 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.title_h1{
+  background-color: rgb(247, 247, 247);
+  padding: 15px;
+  border-radius: 30px;
+  width: 60%;
+}
+
+.title_h2{
+   background-color: white;
+  padding: 15px;
+  border-radius: 30px;
+  width: 50%;
+}
+
+.title_h3{
+  background-color: rgb(247, 247, 247);
+  padding: 15px;
+  border-radius: 30px;
+  width: 60%;
+  
+}
+.reserver-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.reserver-container h2 {
+  text-align: center;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+/* Status card (mesas disponíveis / ocupadas) */
+.status-card {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: #f5f5f5;
+  
+}
+
+.status-item {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.available-status {
+  color: #28a745;
+}
+
+.reserved-status {
+  color: #d9534f;
+}
+
+/* Layout das mesas estilo cinema */
+.cinema-seating {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-left: 100px;
+  padding: 30px;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.row-label {
+  min-width: 40px;
+  font-weight: bold;
+  color: #666;
+}
+
+/* Mesa (imagem da mesa) */
+.seat {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat.selected {
+  transform: scale(1.1);
+}
+
+.table-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+/* Formulário de reserva */
+.reserver-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1.5rem;
+}
+
+.reserver-form h3 {
+  font-size: 1.5rem;
+  color:tomato;
+}
+
+.reserver-form input {
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.reserver-form input:focus {
+  outline: none;
+  border-color: #28a745;
+}
+
+.reserver-form button {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reserver-form button:hover {
+  background: #218838;
+}
+
+/* Mensagens de sucesso ou erro */
+.reserver-msg {
+  text-align: center;
+  font-weight: bold;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.reserver-msg.success {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.reserver-msg.error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .seat-row {
+    justify-content: flex-start;
+  }
+
+  .reserver-form {
+    padding: 0 0.5rem;
+  }
+
+  .status-card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .reserver-container {
+    padding: 1rem;
+  }
+}
